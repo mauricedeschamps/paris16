@@ -3,366 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Paris 16 - Elegant Sights of Paris</title>
-  <meta name="description" content="16 selected sightseeing spots in Paris. Detailed descriptions, metro stations, official links, custom images. Google Map centered on Île de la Cité.">
+  <title>Paris 16 - パリ観光名所16選</title>
+  <meta name="description" content="16 selected Paris sights. 6 languages, custom images, metro, official links, Google Map.">
   <meta name="theme-color" content="#1A2A3A">
   <link rel="apple-touch-icon" href="icons/icon-192.jpg">
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      transition: background-color 0.2s ease, color 0.2s, border-color 0.2s;
-    }
-
-    body.light {
-      --bg: #FDFBF7;
-      --surface: #FFFFFF;
-      --text: #2C3E50;
-      --text-secondary: #6C7A89;
-      --border: #E8E3D9;
-      --accent: #9B2A3E;
-      --accent-light: #F4E3E5;
-      --gold: #C5A059;
-      --card-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
-      --header-bg: #FDFBF7cc;
-      --footer-bg: #FDFBF7cc;
-      --btn-bg: #F1EFEA;
-      --btn-hover: #E4DFD7;
-    }
-
-    body, body.dark {
-      --bg: #1A2A3A;
-      --surface: #243342;
-      --text: #F4F0EA;
-      --text-secondary: #B8C5D0;
-      --border: #33495E;
-      --accent: #D67A6A;
-      --accent-light: #4A2F38;
-      --gold: #E6C384;
-      --card-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
-      --header-bg: #1A2A3Acc;
-      --footer-bg: #1A2A3Acc;
-      --btn-bg: #2E445C;
-      --btn-hover: #3A556E;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      line-height: 1.5;
-      padding: 0;
-      margin: 0;
-    }
-
-    h1, h2, h3, .serif {
-      font-family: 'Playfair Display', serif;
-    }
-
-    .app-header {
-      padding: 1rem 1.5rem;
-      background-color: var(--header-bg);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
-
-    .header-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.8rem;
-    }
-
-    h1 {
-      font-size: 1.7rem;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-      background: linear-gradient(135deg, var(--gold), var(--accent));
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      align-items: center;
-    }
-
-    button, .lang-btn, .settings-trigger {
-      background-color: var(--btn-bg);
-      border: 1px solid var(--border);
-      padding: 0.45rem 1rem;
-      border-radius: 60px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      color: var(--text);
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      backdrop-filter: blur(4px);
-    }
-
-    button:hover, .lang-btn:hover, .settings-trigger:hover {
-      background-color: var(--btn-hover);
-      transform: translateY(-2px);
-      border-color: var(--gold);
-    }
-
-    .main-container {
-      max-width: 1400px;
-      margin: 2rem auto;
-      padding: 0 1.5rem;
-    }
-
-    .spot-slider {
-      display: grid;
-      grid-template-rows: repeat(4, auto);
-      grid-auto-flow: column;
-      grid-auto-columns: minmax(270px, 300px);
-      gap: 1.8rem;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding-bottom: 1.5rem;
-      scrollbar-width: thin;
-    }
-
-    .spot-slider::-webkit-scrollbar {
-      height: 5px;
-    }
-
-    .spot-card {
-      scroll-snap-align: start;
-      background: var(--surface);
-      border-radius: 32px;
-      padding: 1.2rem;
-      box-shadow: var(--card-shadow);
-      cursor: pointer;
-      transition: all 0.25s ease;
-      border: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .spot-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
-      border-color: var(--gold);
-    }
-
-    .spot-img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      border-radius: 24px;
-      margin-bottom: 1rem;
-      background-color: var(--btn-bg);
-    }
-
-    .spot-emoji {
-      font-size: 3.5rem;
-      margin: 0.2rem 0;
-    }
-
-    .spot-name {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin: 0.6rem 0 0.3rem;
-      font-family: 'Playfair Display', serif;
-    }
-
-    .spot-desc {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      margin-bottom: 0.5rem;
-      line-height: 1.4;
-    }
-
-    .detail-view {
-      max-width: 1100px;
-      margin: 1rem auto;
-      background: var(--surface);
-      border-radius: 40px;
-      padding: 2rem;
-      border: 1px solid var(--border);
-      box-shadow: var(--card-shadow);
-    }
-
-    .detail-header {
-      display: flex;
-      align-items: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-      margin-bottom: 2rem;
-      border-bottom: 2px dashed var(--border);
-      padding-bottom: 1.5rem;
-    }
-
-    /* 詳細イメージを大きく表示 */
-    .detail-img {
-      width: 280px;
-      height: 280px;
-      object-fit: cover;
-      border-radius: 32px;
-      background: var(--btn-bg);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    }
-
-    @media (max-width: 700px) {
-      .detail-img {
-        width: 100%;
-        height: auto;
-        max-height: 260px;
-      }
-    }
-
-    .detail-title {
-      font-size: 2.2rem;
-      font-weight: 700;
-      font-family: 'Playfair Display', serif;
-    }
-
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin: 1.8rem 0 1rem 0;
-      border-left: 5px solid var(--accent);
-      padding-left: 1rem;
-      font-family: 'Playfair Display', serif;
-    }
-
-    .detail-description {
-      margin: 1rem 0;
-      line-height: 1.7;
-      font-size: 1rem;
-    }
-
-    .tips-card {
-      background: var(--accent-light);
-      padding: 1.2rem;
-      border-radius: 28px;
-      margin: 1rem 0;
-      border-left: 4px solid var(--gold);
-    }
-
-    .metro-info {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--btn-bg);
-      padding: 0.5rem 1rem;
-      border-radius: 60px;
-      font-size: 0.9rem;
-      margin: 0.5rem 0;
-    }
-
-    .official-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background-color: var(--accent);
-      color: white;
-      padding: 0.6rem 1.2rem;
-      border-radius: 60px;
-      text-decoration: none;
-      font-weight: 500;
-      margin: 1rem 0;
-    }
-
-    .official-link:hover {
-      opacity: 0.9;
-      transform: scale(0.98);
-    }
-
-    .back-buttons {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .settings-panel {
-      background: var(--surface);
-      border-radius: 36px;
-      padding: 1.8rem;
-      margin: 1rem 0;
-      border: 1px solid var(--border);
-    }
-
-    .settings-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
-      margin: 1.5rem 0;
-    }
-
-    .settings-item label {
-      font-weight: 600;
-      display: block;
-      margin-bottom: 0.25rem;
-    }
-
-    .settings-item input {
-      width: 100%;
-      padding: 0.6rem;
-      border-radius: 24px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .map-container {
-      margin: 2rem 0 1rem;
-      border-radius: 28px;
-      overflow: hidden;
-      border: 2px solid var(--gold);
-      box-shadow: var(--card-shadow);
-    }
-
-    iframe {
-      width: 100%;
-      height: 280px;
-      border: 0;
-      display: block;
-    }
-
-    .app-footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      margin-top: 2rem;
-      border-top: 1px solid var(--border);
-      background-color: var(--footer-bg);
-      font-size: 0.9rem;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    @media (max-width: 700px) {
-      .spot-slider { grid-auto-columns: minmax(240px, 260px); gap: 1rem; }
-      .detail-view { padding: 1.2rem; }
-      .detail-header { flex-direction: column; text-align: center; }
-      .detail-title { font-size: 1.7rem; }
-      h1 { font-size: 1.2rem; }
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
+    body.light { --bg: #FDFBF7; --surface: #FFFFFF; --text: #2C3E50; --text-secondary: #6C7A89; --border: #E8E3D9; --accent: #9B2A3E; --accent-light: #F4E3E5; --gold: #C5A059; --card-shadow: 0 12px 28px rgba(0,0,0,0.06); --header-bg: #FDFBF7cc; --footer-bg: #FDFBF7cc; --btn-bg: #F1EFEA; --btn-hover: #E4DFD7; }
+    body, body.dark { --bg: #1A2A3A; --surface: #243342; --text: #F4F0EA; --text-secondary: #B8C5D0; --border: #33495E; --accent: #D67A6A; --accent-light: #4A2F38; --gold: #E6C384; --card-shadow: 0 12px 28px rgba(0,0,0,0.35); --header-bg: #1A2A3Acc; --footer-bg: #1A2A3Acc; --btn-bg: #2E445C; --btn-hover: #3A556E; }
+    body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; line-height: 1.5; }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    .app-header { padding: 1rem 1.5rem; background-color: var(--header-bg); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
+    .header-inner { max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.8rem; }
+    h1 { font-size: 1.7rem; font-weight: 600; background: linear-gradient(135deg, var(--gold), var(--accent)); background-clip: text; -webkit-background-clip: text; color: transparent; }
+    .controls { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+    button, .lang-btn, .settings-trigger { background-color: var(--btn-bg); border: 1px solid var(--border); padding: 0.45rem 1rem; border-radius: 60px; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: var(--text); transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.4rem; backdrop-filter: blur(4px); }
+    button:hover, .lang-btn:hover, .settings-trigger:hover { background-color: var(--btn-hover); transform: translateY(-2px); border-color: var(--gold); }
+    .main-container { max-width: 1400px; margin: 2rem auto; padding: 0 1.5rem; }
+    .spot-slider { display: grid; grid-template-rows: repeat(4, auto); grid-auto-flow: column; grid-auto-columns: minmax(270px, 300px); gap: 1.8rem; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 1.5rem; scrollbar-width: thin; }
+    .spot-slider::-webkit-scrollbar { height: 5px; }
+    .spot-card { scroll-snap-align: start; background: var(--surface); border-radius: 32px; padding: 1.2rem; box-shadow: var(--card-shadow); cursor: pointer; transition: all 0.25s ease; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .spot-card:hover { transform: translateY(-6px); box-shadow: 0 20px 30px rgba(0,0,0,0.2); border-color: var(--gold); }
+    .spot-img { width: 100%; height: 160px; object-fit: cover; border-radius: 24px; margin-bottom: 1rem; background-color: var(--btn-bg); }
+    .spot-emoji { font-size: 3.5rem; margin: 0.2rem 0; }
+    .spot-name { font-size: 1.3rem; font-weight: 700; margin: 0.6rem 0 0.3rem; font-family: 'Playfair Display', serif; }
+    .spot-desc { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.4; }
+    .detail-view { max-width: 1100px; margin: 1rem auto; background: var(--surface); border-radius: 40px; padding: 2rem; border: 1px solid var(--border); box-shadow: var(--card-shadow); }
+    .detail-header { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem; border-bottom: 2px dashed var(--border); padding-bottom: 1.5rem; }
+    .detail-img { width: 280px; height: 280px; object-fit: cover; border-radius: 32px; background: var(--btn-bg); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+    @media (max-width: 700px) { .detail-img { width: 100%; height: auto; max-height: 260px; } .spot-slider { grid-auto-columns: minmax(240px, 260px); gap: 1rem; } .detail-view { padding: 1.2rem; } .detail-header { flex-direction: column; text-align: center; } .detail-title { font-size: 1.7rem; } h1 { font-size: 1.2rem; } }
+    .detail-title { font-size: 2.2rem; font-weight: 700; font-family: 'Playfair Display', serif; }
+    .detail-description { margin: 1rem 0; line-height: 1.7; font-size: 1rem; }
+    .tips-card { background: var(--accent-light); padding: 1.2rem; border-radius: 28px; margin: 1rem 0; border-left: 4px solid var(--gold); }
+    .metro-info { display: inline-flex; align-items: center; gap: 8px; background: var(--btn-bg); padding: 0.5rem 1rem; border-radius: 60px; font-size: 0.9rem; margin: 0.5rem 0; }
+    .official-link { display: inline-flex; align-items: center; gap: 6px; background-color: var(--accent); color: white; padding: 0.6rem 1.2rem; border-radius: 60px; text-decoration: none; font-weight: 500; margin: 1rem 0; }
+    .official-link:hover { opacity: 0.9; transform: scale(0.98); }
+    .back-buttons { display: flex; gap: 1rem; margin-top: 2rem; justify-content: center; flex-wrap: wrap; }
+    .settings-panel { background: var(--surface); border-radius: 36px; padding: 1.8rem; margin: 1rem 0; border: 1px solid var(--border); }
+    .settings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .settings-item label { font-weight: 600; display: block; margin-bottom: 0.25rem; }
+    .settings-item input { width: 100%; padding: 0.6rem; border-radius: 24px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+    .map-container { margin: 2rem 0 1rem; border-radius: 28px; overflow: hidden; border: 2px solid var(--gold); }
+    iframe { width: 100%; height: 280px; border: 0; display: block; }
+    .app-footer { text-align: center; padding: 2rem 1rem; margin-top: 2rem; border-top: 1px solid var(--border); background-color: var(--footer-bg); font-size: 0.9rem; }
+    .hidden { display: none; }
   </style>
 </head>
 <body class="dark">
@@ -372,18 +60,13 @@
       <div class="controls">
         <div class="lang-group" id="lang-buttons"></div>
         <button id="settings-btn" class="settings-trigger">⚙️ <span id="settings-btn-text">Image Settings</span></button>
-        <button id="theme-toggle" aria-label="Toggle theme">🌙 <span id="theme-toggle-text">Dark/Light</span></button>
+        <button id="theme-toggle">🌙 <span id="theme-toggle-text">Dark/Light</span></button>
       </div>
     </div>
   </header>
-
-  <main id="app-main">
-    <div id="home-view" class="main-container">
-      <div class="spot-slider" id="spot-slider"></div>
-    </div>
-
+  <main>
+    <div id="home-view" class="main-container"><div class="spot-slider" id="spot-slider"></div></div>
     <div id="detail-view" class="detail-view hidden"></div>
-
     <div id="settings-view" class="settings-panel hidden main-container">
       <h2 id="settings-title">🖼️ Set Custom Images</h2>
       <p id="settings-desc">Enter image URLs for each spot. Leave blank to show emoji.</p>
@@ -394,202 +77,164 @@
       </div>
     </div>
   </main>
-
   <footer class="app-footer">
     <div class="map-container">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d41992.080143709585!2d2.330089750155659!3d48.85428315449778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66fc0f568152d%3A0x1ff10f3c5a4fefb0!2s%C3%8Ele%20de%20la%20Cit%C3%A9!5e0!3m2!1sen!2sfr!4v1711123456789!5m2!1sen!2sfr" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d41992.080143709585!2d2.330089750155659!3d48.85428315449778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66fc0f568152d%3A0x1ff10f3c5a4fefb0!2s%C3%8Ele%20de%20la%20Cit%C3%A9!5e0!3m2!1sen!2sfr!4v1711123456789!5m2!1sen!2sfr" allowfullscreen loading="lazy"></iframe>
     </div>
     <div id="footer-text">📮 Paris Travel Concierge<br><a href="mailto:mementomorikatsu@gmail.com">mementomorikatsu@gmail.com</a></div>
   </footer>
-
   <script>
-    // ---------- 言語は英語のみ（固定）だが、将来拡張に備えて構造維持 ----------
-    const currentLang = 'en';
-    const translations = {
-      en: {
-        title: '✨ Paris 16 · Elegant Travel',
-        settingsBtn: 'Image Settings', themeBtn: 'Dark/Light', saveSettings: 'Save & Refresh', back: 'Back', home: 'Home',
-        tipsLabel: '💡 Insider Tips', metroLabel: '🚇 Nearest Metro', officialLabel: '🔗 Official Website',
-        settingsTitle: '🖼️ Set Custom Images', settingsDesc: 'Enter image URLs for each spot. Leave blank to show emoji.',
-        footerText: '📮 Paris Travel Concierge'
-      }
+    const languages = { en:'🇬🇧 English', fr:'🇫🇷 Français', de:'🇩🇪 Deutsch', it:'🇮🇹 Italiano', ru:'🇷🇺 Русский', ja:'🇯🇵 日本語' };
+    let currentLang = 'en';
+    const t = {
+      en: { title:'✨ Paris 16 · Elegant Travel', settingsBtn:'Image Settings', themeBtn:'Dark/Light', saveSettings:'Save & Refresh', back:'Back', home:'Home', tipsLabel:'💡 Insider Tips', metroLabel:'🚇 Nearest Metro', officialLabel:'🔗 Official Website', settingsTitle:'🖼️ Set Custom Images', settingsDesc:'Enter image URLs. Leave blank for emoji.', footerText:'📮 Paris Travel Concierge' },
+      fr: { title:'✨ Paris 16 · Voyage Élégant', settingsBtn:'Paramètres image', themeBtn:'Sombre/Clair', saveSettings:'Enregistrer', back:'Retour', home:'Accueil', tipsLabel:'💡 Conseils', metroLabel:'🚇 Métro', officialLabel:'🔗 Site officiel', settingsTitle:'🖼️ Images personnalisées', settingsDesc:'Entrez les URLs des images. Laissez vide pour emoji.', footerText:'📮 Conciergerie Parisienne' },
+      de: { title:'✨ Paris 16 · Eleganz Reisen', settingsBtn:'Bild-Einstell.', themeBtn:'Dunkel/Hell', saveSettings:'Speichern', back:'Zurück', home:'Start', tipsLabel:'💡 Tipps', metroLabel:'🚇 Métro', officialLabel:'🔗 Offiz. Website', settingsTitle:'🖼️ Benutzerdef. Bilder', settingsDesc:'Bild-URLs eingeben. Leer für Emoji.', footerText:'📮 Paris Reisekoncierge' },
+      it: { title:'✨ Paris 16 · Viaggio Elegante', settingsBtn:'Impostaz. Immagini', themeBtn:'Scuro/Chiaro', saveSettings:'Salva', back:'Indietro', home:'Home', tipsLabel:'💡 Consigli', metroLabel:'🚇 Metro', officialLabel:'🔗 Sito Ufficiale', settingsTitle:'🖼️ Immagini personalizzate', settingsDesc:'Inserisci URL immagini. Lascia vuoto per emoji.', footerText:'📮 Concierge di Viaggio Parigi' },
+      ru: { title:'✨ Париж 16 · Элегантное путешествие', settingsBtn:'Настройки изображений', themeBtn:'Тёмная/Светлая', saveSettings:'Сохранить', back:'Назад', home:'Главная', tipsLabel:'💡 Советы', metroLabel:'🚇 Метро', officialLabel:'🔗 Офиц. сайт', settingsTitle:'🖼️ Установить изображения', settingsDesc:'Введите URL изображений. Пусто для эмодзи.', footerText:'📮 Парижский консьерж' },
+      ja: { title:'✨ パリ観光名所16選 · エレガンスの旅', settingsBtn:'画像設定', themeBtn:'ダーク/ライト', saveSettings:'保存して更新', back:'戻る', home:'ホーム', tipsLabel:'💡 おすすめポイント', metroLabel:'🚇 最寄り駅', officialLabel:'🔗 公式サイト', settingsTitle:'🖼️ 画像URLを設定', settingsDesc:'各スポットの画像URLを入力。空欄は絵文字表示。', footerText:'📮 パリ観光コンシェルジュ' }
     };
-
     const spotsData = [
-      { id: "eiffel", emoji: "🗼", officialUrl: "https://www.toureiffel.paris/", metro: "Champ de Mars - Tour Eiffel", name: "Eiffel Tower", desc: "Iconic wrought-iron lattice tower built by Gustave Eiffel for 1889 World's Fair. Breathtaking views of Paris.", tips: "Book tickets online. Visit at sunset for golden hour + sparkling lights at night." },
-      { id: "louvre", emoji: "🎨", officialUrl: "https://www.louvre.fr/", metro: "Palais Royal - Musée du Louvre", name: "Louvre Museum", desc: "World's largest art museum, home to Mona Lisa and Venus de Milo.", tips: "Go on Wednesday/Friday late opening. Enter via Carrousel du Louvre." },
-      { id: "notre_dame", emoji: "⛪", officialUrl: "https://www.notredamedeparis.fr/", metro: "Cité", name: "Notre-Dame Cathedral", desc: "Masterpiece of French Gothic architecture, reopened in 2024 after fire.", tips: "Climb the towers for gargoyles. Visit early morning." },
-      { id: "arc", emoji: "🏛️", officialUrl: "https://www.paris-arc-de-triomphe.fr/", metro: "Charles de Gaulle - Étoile", name: "Arc de Triomphe", desc: "Napoleon's triumphal arch with panoramic terrace.", tips: "Use underpass. Sunset views over Champs-Élysées." },
-      { id: "montmartre", emoji: "🎭", officialUrl: "https://www.sacre-coeur-montmartre.com/", metro: "Anvers / Abbesses", name: "Montmartre & Sacré-Cœur", desc: "Historic hilltop village with white basilica and artists' square.", tips: "Explore Place du Tertre. Ride funicular or climb stairs." },
-      { id: "champs", emoji: "🛍️", officialUrl: "https://www.leschampselysees.fr/", metro: "Champs-Élysées - Clemenceau", name: "Champs-Élysées", desc: "Famous avenue with luxury shops and cafes.", tips: "Grab coffee at a terrace, visit Ladurée for macarons." },
-      { id: "versailles", emoji: "👑", officialUrl: "https://en.chateauversailles.fr/", metro: "Versailles Château Rive Gauche", name: "Palace of Versailles", desc: "Opulent royal château with Hall of Mirrors and gardens.", tips: "Buy passport ticket with gardens. Rent a bike." },
-      { id: "orsay", emoji: "🖼️", officialUrl: "https://www.musee-orsay.fr/", metro: "Solférino - Musée d'Orsay", name: "Musée d'Orsay", desc: "Beaux-arts railway station turned museum, famous for Impressionists.", tips: "Go on Thursday late opening. Start from top floor." },
-      { id: "sainte_chapelle", emoji: "✨", officialUrl: "https://www.sainte-chapelle.fr/", metro: "Cité", name: "Sainte-Chapelle", desc: "Gothic royal chapel with 1,113 stunning stained glass windows.", tips: "Visit on sunny morning. Combine with Conciergerie." },
-      { id: "opera_garnier", emoji: "🎭", officialUrl: "https://www.operadeparis.fr/", metro: "Opéra", name: "Palais Garnier", desc: "Grand 19th-century opera house with Chagall ceiling.", tips: "Take a self-guided tour. Grand Foyer rivals Hall of Mirrors." },
-      { id: "pompidou", emoji: "🎨", officialUrl: "https://www.centrepompidou.fr/", metro: "Rambuteau", name: "Centre Pompidou", desc: "Modern art museum with inside-out architecture.", tips: "Ride external escalator for free panorama. See Stravinsky Fountain." },
-      { id: "pantheon", emoji: "📜", officialUrl: "https://www.paris-pantheon.fr/", metro: "Cardinal Lemoine", name: "Panthéon", desc: "Neoclassical mausoleum for Voltaire, Rousseau, Hugo, Curie.", tips: "Climb the dome for 360° view of Latin Quarter. Foucault pendulum." },
-      { id: "luxembourg", emoji: "🌳", officialUrl: "https://www.senat.fr/visite/jardin/", metro: "Luxembourg", name: "Luxembourg Gardens", desc: "Elegant Parisian park with fountains and statues.", tips: "Grab a chair near Medici Fountain. Watch model sailboats." },
-      { id: "arenes", emoji: "🏟️", officialUrl: "https://www.paris.fr/", metro: "Place Monge / Jussieu", name: "Arènes de Lutèce", desc: "Ancient Roman amphitheater from 1st century AD, hidden gem.", tips: "Free entry, lovely spot for a picnic." },
-      { id: "seine_cruise", emoji: "🚢", officialUrl: "https://www.bateaux-mouches.fr/", metro: "Pont de l'Alma / Châtelet", name: "Seine River Cruise", desc: "Scenic boat cruise passing Eiffel Tower, Louvre, Notre-Dame.", tips: "Take an evening cruise for Illuminations." },
-      { id: "catacombs", emoji: "💀", officialUrl: "https://www.catacombes.paris.fr/", metro: "Denfert-Rochereau", name: "Catacombs of Paris", desc: "Underground ossuary holding remains of over 6 million Parisians.", tips: "Buy tickets in advance. Bring a jacket – it's chilly underground." }
+      { id:"eiffel", emoji:"🗼", officialUrl:"https://www.toureiffel.paris/", metro:{en:"Champ de Mars - Tour Eiffel",fr:"Champ de Mars - Tour Eiffel",de:"Champ de Mars - Tour Eiffel",it:"Champ de Mars - Tour Eiffel",ru:"Шан-де-Марс — Тур Эйфель",ja:"シャン・ド・マルス＝トゥール・エッフェル駅"}, name:{en:"Eiffel Tower",fr:"Tour Eiffel",de:"Eiffelturm",it:"Torre Eiffel",ru:"Эйфелева башня",ja:"エッフェル塔"}, desc:{en:"Iconic wrought-iron tower built for 1889 World's Fair. Breathtaking views.",fr:"Tour emblématique en fer forgé. Vue imprenable.",de:"Wahrzeichen aus Schmiedeeisen. Atemberaubende Aussicht.",it:"Iconica torre in ferro battuto. Vista mozzafiato.",ru:"Знаменитая башня. Захватывающий вид.",ja:"1889年パリ万博の鉄塔。絶景。"}, tips:{en:"Book online. Sunset & sparkling lights.",fr:"Réservez en ligne. Coucher du soleil.",de:"Online buchen. Sonnenuntergang.",it:"Prenota online. Tramonto.",ru:"Бронируйте онлайн. Закат.",ja:"オンライン予約必須。日没時がおすすめ。"}},
+      { id:"louvre", emoji:"🎨", officialUrl:"https://www.louvre.fr/", metro:{en:"Palais Royal - Musée du Louvre",fr:"Palais Royal - Musée du Louvre",de:"Palais Royal - Musée du Louvre",it:"Palais Royal - Musée du Louvre",ru:"Пале-Руаяль — Лувр",ja:"パレ・ロワイヤル＝ミュゼ・デュ・ルーヴル駅"}, name:{en:"Louvre Museum",fr:"Musée du Louvre",de:"Louvre Museum",it:"Museo del Louvre",ru:"Лувр",ja:"ルーヴル美術館"}, desc:{en:"World's largest art museum, home to Mona Lisa.",fr:"Plus grand musée d'art, Joconde.",de:"Größtes Kunstmuseum, Mona Lisa.",it:"Museo più grande, Gioconda.",ru:"Крупнейший музей, Джоконда.",ja:"世界最大の美術館。モナリザ。"}, tips:{en:"Late opening Wed/Fri. Enter via Carrousel.",fr:"Ouvert tard mer/ven. Entrée Carrousel.",de:"Spätabends Mi/Fr. Eingang Carrousel.",it:"Aperto tardi mer/ven. Ingresso Carrousel.",ru:"Вечер ср/пт. Вход через Carrousel.",ja:"水・金曜夜間開館。地下の入口から。"}},
+      { id:"notre_dame", emoji:"⛪", officialUrl:"https://www.notredamedeparis.fr/", metro:{en:"Cité",fr:"Cité",de:"Cité",it:"Cité",ru:"Сите",ja:"シテ駅"}, name:{en:"Notre-Dame Cathedral",fr:"Cathédrale Notre-Dame",de:"Notre-Dame Kathedrale",it:"Cattedrale di Notre-Dame",ru:"Собор Парижской Богоматери",ja:"ノートルダム大聖堂"}, desc:{en:"Gothic masterpiece, reopened 2024 after fire.",fr:"Chef-d'œuvre gothique, réouvert 2024.",de:"Gotik-Meisterwerk, wiedereröffnet 2024.",it:"Capolavoro gotico, riaperto 2024.",ru:"Шедевр готики, открыт 2024.",ja:"ゴシック建築の傑作。2024年再開。"}, tips:{en:"Climb towers for gargoyles. Early morning.",fr:"Montez aux tours pour gargouilles. Tôt.",de:"Türme für Wasserspeier. Früher Morgen.",it:"Sali per gargoyle. Mattino presto.",ru:"Поднимитесь на башни. Рано утром.",ja:"塔に登りガーゴイル。早朝が狙い目。"}},
+      { id:"arc", emoji:"🏛️", officialUrl:"https://www.paris-arc-de-triomphe.fr/", metro:{en:"Charles de Gaulle - Étoile",fr:"Charles de Gaulle - Étoile",de:"Charles de Gaulle - Étoile",it:"Charles de Gaulle - Étoile",ru:"Шарль де Голль — Этуаль",ja:"シャルル・ド・ゴール＝エトワール駅"}, name:{en:"Arc de Triomphe",fr:"Arc de Triomphe",de:"Triumphbogen",it:"Arco di Trionfo",ru:"Триумфальная арка",ja:"凱旋門"}, desc:{en:"Napoleon's triumphal arch with panoramic terrace.",fr:"Arc de Napoléon avec terrasse panoramique.",de:"Napoleons Triumphbogen mit Panorama.",it:"Arco di Napoleone con terrazza.",ru:"Триумфальная арка Наполеона.",ja:"ナポレオンの凱旋門。屋上展望。"}, tips:{en:"Use underpass. Sunset views.",fr:"Souterrain. Vues au coucher.",de:"Unterführung. Sonnenuntergang.",it:"Sottopassaggio. Tramonto.",ru:"Подземный переход. Закат.",ja:"地下道でアクセス。夕暮れ絶景。"}},
+      { id:"montmartre", emoji:"🎭", officialUrl:"https://www.sacre-coeur-montmartre.com/", metro:{en:"Anvers / Abbesses",fr:"Anvers / Abbesses",de:"Anvers / Abbesses",it:"Anvers / Abbesses",ru:"Анвер / Аббес",ja:"アンヴェール駅 / アベッス駅"}, name:{en:"Montmartre & Sacré-Cœur",fr:"Montmartre et Sacré-Cœur",de:"Montmartre & Sacré-Cœur",it:"Montmartre e Sacro Cuore",ru:"Монмартр и Сакре-Кёр",ja:"モンマルトル／サクレクール寺院"}, desc:{en:"Historic hilltop village with white basilica.",fr:"Village historique sur la colline.",de:"Historisches Hügeldorf.",it:"Villaggio storico sulla collina.",ru:"Историческая деревня на холме.",ja:"丘の上の芸術家の街。"}, tips:{en:"Explore Place du Tertre. Funicular.",fr:"Place du Tertre. Funiculaire.",de:"Place du Tertre. Standseilbahn.",it:"Place du Tertre. Funicolare.",ru:"Площадь Тертр. Фуникулёр.",ja:"テルトル広場。ケーブルカー。"}},
+      { id:"champs", emoji:"🛍️", officialUrl:"https://www.leschampselysees.fr/", metro:{en:"Champs-Élysées - Clemenceau",fr:"Champs-Élysées - Clemenceau",de:"Champs-Élysées - Clemenceau",it:"Champs-Élysées - Clemenceau",ru:"Елисейские поля — Клемансо",ja:"シャンゼリゼ＝クレマンソー駅"}, name:{en:"Champs-Élysées",fr:"Champs-Élysées",de:"Champs-Élysées",it:"Champs-Élysées",ru:"Елисейские поля",ja:"シャンゼリゼ通り"}, desc:{en:"Famous avenue with luxury shops and cafes.",fr:"Avenue célèbre, boutiques et cafés.",de:"Berühmte Allee mit Luxusgeschäften.",it:"Viale famoso con negozi di lusso.",ru:"Знаменитый проспект с магазинами.",ja:"高級ブティックとカフェの大通り。"}, tips:{en:"Terrace coffee. Ladurée macarons.",fr:"Café en terrasse. Macarons Ladurée.",de:"Kaffee auf Terrasse. Ladurée Macarons.",it:"Caffè in terrazza. Macaron Ladurée.",ru:"Кофе на террасе. Макароны Ladurée.",ja:"テラスカフェ。ラデュレのマカロン。"}},
+      { id:"versailles", emoji:"👑", officialUrl:"https://en.chateauversailles.fr/", metro:{en:"Versailles Château Rive Gauche",fr:"Versailles Château Rive Gauche",de:"Versailles Château Rive Gauche",it:"Versailles Château Rive Gauche",ru:"Версаль — Шато — Левый берег",ja:"ヴェルサイユ＝シャトー駅"}, name:{en:"Palace of Versailles",fr:"Château de Versailles",de:"Schloss Versailles",it:"Palazzo di Versailles",ru:"Версальский дворец",ja:"ヴェルサイユ宮殿"}, desc:{en:"Opulent royal château with Hall of Mirrors.",fr:"Château royal opulent, Galerie des Glaces.",de:"Prächtiges Schloss mit Spiegelsaal.",it:"Sontuoso castello, Sala degli Specchi.",ru:"Роскошный замок, Зеркальный зал.",ja:"鏡の間と広大な庭園。"}, tips:{en:"Passport ticket + gardens. Rent a bike.",fr:"Billet passeport + jardins. Louez un vélo.",de:"Pass-Ticket + Gärten. Fahrrad mieten.",it:"Biglietto pass + giardini. Noleggia bici.",ru:"Паспортный билет + сады. Аренда велосипеда.",ja:"庭園付きチケット。自転車レンタル。"}},
+      { id:"orsay", emoji:"🖼️", officialUrl:"https://www.musee-orsay.fr/", metro:{en:"Solférino - Musée d'Orsay",fr:"Solférino - Musée d'Orsay",de:"Solférino - Musée d'Orsay",it:"Solférino - Musée d'Orsay",ru:"Сольферино — Музей д'Орсе",ja:"ソルフェリーノ＝オルセー駅"}, name:{en:"Musée d'Orsay",fr:"Musée d'Orsay",de:"Musée d'Orsay",it:"Musée d'Orsay",ru:"Музей д'Орсе",ja:"オルセー美術館"}, desc:{en:"Former railway station, Impressionist masterpieces.",fr:"Ancienne gare, chefs-d'œuvre impressionnistes.",de:"Ehemaliger Bahnhof, Impressionisten.",it:"Ex stazione, capolavori impressionisti.",ru:"Бывший вокзал, импрессионисты.",ja:"駅を改装。印象派の殿堂。"}, tips:{en:"Thursday late opening. Start top floor.",fr:"Jeudi soir. Commencez par l'étage supérieur.",de:"Donnerstag spät. Beginnen Sie oben.",it:"Giovedì sera. Inizia dall'alto.",ru:"Четверг вечер. Начните с верхнего этажа.",ja:"木曜夜間開館。最上階から。"}},
+      { id:"sainte_chapelle", emoji:"✨", officialUrl:"https://www.sainte-chapelle.fr/", metro:{en:"Cité",fr:"Cité",de:"Cité",it:"Cité",ru:"Сите",ja:"シテ駅"}, name:{en:"Sainte-Chapelle",fr:"Sainte-Chapelle",de:"Sainte-Chapelle",it:"Sainte-Chapelle",ru:"Сент-Шапель",ja:"サント・シャペル"}, desc:{en:"Gothic royal chapel with 1,113 stained glass windows.",fr:"Chapelle royale gothique aux 1 113 vitraux.",de:"Gotische Kapelle mit 1.113 Glasfenstern.",it:"Cappella reale gotica con 1.113 vetrate.",ru:"Готическая часовня с 1 113 витражами.",ja:"圧巻のステンドグラス。"}, tips:{en:"Sunny morning. Combine with Conciergerie.",fr:"Matin ensoleillé. Avec Conciergerie.",de:"Sonniger Morgen. Kombinieren Sie mit Conciergerie.",it:"Mattina soleggiata. Abbina Conciergerie.",ru:"Солнечное утро. Совместите с Консьержери.",ja:"晴れた午前中。コンシェルジュリーとセットで。"}},
+      { id:"opera_garnier", emoji:"🎭", officialUrl:"https://www.operadeparis.fr/", metro:{en:"Opéra",fr:"Opéra",de:"Opéra",it:"Opéra",ru:"Опера",ja:"オペラ駅"}, name:{en:"Palais Garnier",fr:"Palais Garnier",de:"Palais Garnier",it:"Palais Garnier",ru:"Опера Гарнье",ja:"パリ・オペラ座"}, desc:{en:"Grand 19th-century opera house, Chagall ceiling.",fr:"Grand opéra du XIXe, plafond Chagall.",de:"Große Oper, Chagall-Decke.",it:"Grande opera, soffitto di Chagall.",ru:"Большой оперный театр, потолок Шагала.",ja:"壮大な階段とシャガール天井画。"}, tips:{en:"Self-guided tour. Grand Foyer.",fr:"Visite autoguidée. Grand Foyer.",de:"Selbstführung. Grand Foyer.",it:"Tour autoguidato. Grand Foyer.",ru:"Самостоятельная экскурсия. Большое фойе.",ja:"見学ツアー。グラン・フォワイエ。"}},
+      { id:"pompidou", emoji:"🎨", officialUrl:"https://www.centrepompidou.fr/", metro:{en:"Rambuteau",fr:"Rambuteau",de:"Rambuteau",it:"Rambuteau",ru:"Рамбюто",ja:"ランビュトー駅"}, name:{en:"Centre Pompidou",fr:"Centre Pompidou",de:"Centre Pompidou",it:"Centre Pompidou",ru:"Центр Помпиду",ja:"ポンピドゥー・センター"}, desc:{en:"Modern art museum, inside-out architecture.",fr:"Musée d'art moderne, architecture extérieure.",de:"Museum für moderne Kunst, Inside-out-Architektur.",it:"Museo d'arte moderna, architettura inside-out.",ru:"Музей современного искусства, вывернутая архитектура.",ja:"パイプむき出しの建物。"}, tips:{en:"External escalator free panorama. Stravinsky Fountain.",fr:"Escalator extérieur panorama gratuit. Fontaine Stravinsky.",de:"Außenrolltreppe kostenlose Aussicht. Stravinsky-Brunnen.",it:"Scala mobile esterna panorama gratuito. Fontana Stravinsky.",ru:"Внешний эскалатор бесплатный вид. Фонтан Стравинского.",ja:"外側エスカレーター無料展望。ストラヴィンスキー噴水。"}},
+      { id:"pantheon", emoji:"📜", officialUrl:"https://www.paris-pantheon.fr/", metro:{en:"Cardinal Lemoine",fr:"Cardinal Lemoine",de:"Cardinal Lemoine",it:"Cardinal Lemoine",ru:"Кардинал Лемуан",ja:"カルディナル・ルモワーヌ駅"}, name:{en:"Panthéon",fr:"Panthéon",de:"Panthéon",it:"Panthéon",ru:"Пантеон",ja:"パンテオン"}, desc:{en:"Neoclassical mausoleum for Voltaire, Rousseau, Hugo, Curie.",fr:"Mausolée néoclassique pour Voltaire, Rousseau, Hugo, Curie.",de:"Neoklassizistisches Mausoleum.",it:"Mausoleo neoclassico.",ru:"Неоклассический мавзолей.",ja:"ヴォルテール、ユゴー、キュリー夫人が眠る廟。"}, tips:{en:"Climb dome for 360° view. Foucault pendulum.",fr:"Montez au dôme vue 360°. Pendule de Foucault.",de:"Kuppel für 360°-Blick. Foucaultsches Pendel.",it:"Cupola vista 360°. Pendolo di Foucault.",ru:"Купол панорама 360°. Маятник Фуко.",ja:"ドーム展望台360°。フーコーの振り子。"}},
+      { id:"luxembourg", emoji:"🌳", officialUrl:"https://www.senat.fr/visite/jardin/", metro:{en:"Luxembourg",fr:"Luxembourg",de:"Luxembourg",it:"Luxembourg",ru:"Люксембург",ja:"リュクサンブール駅"}, name:{en:"Luxembourg Gardens",fr:"Jardin du Luxembourg",de:"Luxembourg-Gärten",it:"Giardino del Lussemburgo",ru:"Люксембургский сад",ja:"リュクサンブール公園"}, desc:{en:"Elegant park with fountains and statues.",fr:"Élégant parc avec fontaines et statues.",de:"Eleganter Park mit Brunnen und Statuen.",it:"Elegante parco con fontane e statue.",ru:"Элегантный парк с фонтанами и статуями.",ja:"噴水・彫刻が美しい公園。"}, tips:{en:"Medici Fountain chair. Model sailboats.",fr:"Chaise près Fontaine Médicis. Voiliers miniatures.",de:"Stuhl am Medici-Brunnen. Modellsegelboote.",it:"Sedia vicino Fontana Medici. Barche a vela in miniatura.",ru:"Стул у фонтана Медичи. Игрушечные парусники.",ja:"メディシス噴水のそばの椅子。池のボート。"}},
+      { id:"arenes", emoji:"🏟️", officialUrl:"https://www.paris.fr/", metro:{en:"Place Monge / Jussieu",fr:"Place Monge / Jussieu",de:"Place Monge / Jussieu",it:"Place Monge / Jussieu",ru:"Плас Монж / Жюсьё",ja:"プラス・モンジュ駅"}, name:{en:"Arènes de Lutèce",fr:"Arènes de Lutèce",de:"Arènes de Lutèce",it:"Arènes de Lutèce",ru:"Арены Лютеции",ja:"リュテス競技場"}, desc:{en:"Ancient Roman amphitheater, hidden gem.",fr:"Amphithéâtre romain antique, joyau caché.",de:"Antikes römisches Amphitheater, verstecktes Juwel.",it:"Antico anfiteatro romano, gioiello nascosto.",ru:"Древнеримский амфитеатр, скрытая жемчужина.",ja:"パリ最古の遺跡。無料。"}, tips:{en:"Free entry. Perfect for picnic.",fr:"Entrée gratuite. Parfait pour pique-nique.",de:"Freier Eintritt. Perfekt für Picknick.",it:"Ingresso gratuito. Perfetto per picnic.",ru:"Вход свободный. Идеально для пикника.",ja:"無料。ピクニックに最適。"}},
+      { id:"seine_cruise", emoji:"🚢", officialUrl:"https://www.bateaux-mouches.fr/", metro:{en:"Pont de l'Alma / Châtelet",fr:"Pont de l'Alma / Châtelet",de:"Pont de l'Alma / Châtelet",it:"Pont de l'Alma / Châtelet",ru:"Пон-де-л'Альма / Шатле",ja:"ポン・ド・ラルマ駅"}, name:{en:"Seine River Cruise",fr:"Croisière sur la Seine",de:"Seine-Flusskreuzfahrt",it:"Crociera sulla Senna",ru:"Прогулка по Сене",ja:"セーヌ川クルーズ"}, desc:{en:"Scenic boat cruise past Eiffel Tower, Louvre, Notre-Dame.",fr:"Croisière pittoresque devant Tour Eiffel, Louvre, Notre-Dame.",de:"Malerische Bootsfahrt vorbei an Sehenswürdigkeiten.",it:"Pittoresca crociera.",ru:"Живописная прогулка на лодке.",ja:"船上からパリのモニュメントを満喫。"}, tips:{en:"Evening cruise for Illuminations.",fr:"Croisière en soirée pour illuminations.",de:"Abendkreuzfahrt für Illuminationen.",it:"Crociera serale per illuminazioni.",ru:"Вечерняя прогулка ради иллюминации.",ja:"夜景クルーズが絶品。"}},
+      { id:"catacombs", emoji:"💀", officialUrl:"https://www.catacombes.paris.fr/", metro:{en:"Denfert-Rochereau",fr:"Denfert-Rochereau",de:"Denfert-Rochereau",it:"Denfert-Rochereau",ru:"Данфер-Рошро",ja:"ダンフェール＝ロシュロー駅"}, name:{en:"Catacombs of Paris",fr:"Catacombes de Paris",de:"Katakomben von Paris",it:"Catacombe di Parigi",ru:"Парижские катакомбы",ja:"パリ・カタコンブ"}, desc:{en:"Underground ossuary with remains of 6 million Parisians.",fr:"Ossuaire souterrain de 6 millions de Parisiens.",de:"Unterirdisches Beinhaus mit 6 Millionen Parisern.",it:"Ossario sotterraneo di 6 milioni di parigini.",ru:"Подземный склеп с останками 6 миллионов парижан.",ja:"地下の骨窟。約600万人の遺骨。"}, tips:{en:"Buy tickets in advance. Bring a jacket.",fr:"Achetez billets à l'avance. Apportez une veste.",de:"Tickets im Voraus. Jacke mitbringen.",it:"Acquista biglietti in anticipo. Porta una giacca.",ru:"Покупайте билеты заранее. Возьмите куртку.",ja:"事前予約必須。地下は冷えるので上着を。"}}
     ];
-
     let customImages = JSON.parse(localStorage.getItem('paris_custom_images')) || {};
-
-    function getImageForSpot(spotId) {
-      return customImages[spotId] || null;
+    function getImageForSpot(id) { return customImages[id] || null; }
+    function updateUI() {
+      const tr = t[currentLang];
+      document.getElementById('app-title').innerText = tr.title;
+      document.getElementById('settings-btn-text').innerText = tr.settingsBtn;
+      document.getElementById('theme-toggle-text').innerText = tr.themeBtn;
+      document.getElementById('save-settings-text').innerText = tr.saveSettings;
+      document.getElementById('close-settings-text').innerText = tr.back;
+      document.getElementById('settings-title').innerText = tr.settingsTitle;
+      document.getElementById('settings-desc').innerText = tr.settingsDesc;
+      document.getElementById('footer-text').innerHTML = `${tr.footerText}<br><a href="mailto:mementomorikatsu@gmail.com">mementomorikatsu@gmail.com</a>`;
+      renderHome();
+      const curId = document.getElementById('detail-view').getAttribute('data-spot-id');
+      if (!document.getElementById('home-view').classList.contains('hidden') && curId) showDetailView(curId);
     }
-
-    function updateUILanguage() {
-      const t = translations.en;
-      document.getElementById('app-title').innerText = t.title;
-      document.getElementById('settings-btn-text').innerText = t.settingsBtn;
-      document.getElementById('theme-toggle-text').innerText = t.themeBtn;
-      document.getElementById('save-settings-text').innerText = t.saveSettings;
-      document.getElementById('close-settings-text').innerText = t.back;
-      document.getElementById('settings-title').innerText = t.settingsTitle;
-      document.getElementById('settings-desc').innerText = t.settingsDesc;
-      document.getElementById('footer-text').innerHTML = `${t.footerText}<br><a href="mailto:mementomorikatsu@gmail.com">mementomorikatsu@gmail.com</a>`;
-      renderHomeGrid();
-      if (!document.getElementById('home-view').classList.contains('hidden')) return;
-      const activeId = document.getElementById('detail-view')?.getAttribute('data-spot-id');
-      if (activeId) showDetailView(activeId);
-    }
-
-    function renderHomeGrid() {
+    function renderHome() {
       const container = document.getElementById('spot-slider');
       container.innerHTML = '';
       spotsData.forEach(spot => {
-        const card = document.createElement('div');
-        card.className = 'spot-card';
-        const descText = spot.desc.substring(0, 80);
+        const card = document.createElement('div'); card.className = 'spot-card';
+        const name = spot.name[currentLang] || spot.name.en;
+        const desc = (spot.desc[currentLang] || spot.desc.en).substring(0, 80);
         const imgUrl = getImageForSpot(spot.id);
-        const imgHtml = imgUrl ? `<img class="spot-img" src="${imgUrl}" alt="${spot.name}" loading="lazy">` : `<div class="spot-emoji">${spot.emoji}</div>`;
-        card.innerHTML = `${imgHtml}<div class="spot-name">${spot.name}</div><div class="spot-desc">${descText}...</div>`;
-        card.addEventListener('click', () => showDetailView(spot.id));
+        const imgHtml = imgUrl ? `<img class="spot-img" src="${imgUrl}" alt="${name}" loading="lazy">` : `<div class="spot-emoji">${spot.emoji}</div>`;
+        card.innerHTML = `${imgHtml}<div class="spot-name">${name}</div><div class="spot-desc">${desc}...</div>`;
+        card.onclick = () => showDetailView(spot.id);
         container.appendChild(card);
       });
     }
-
-    function showDetailView(spotId) {
-      const spot = spotsData.find(s => s.id === spotId);
+    function showDetailView(id) {
+      const spot = spotsData.find(s => s.id === id);
       if (!spot) return;
-      const t = translations.en;
+      const tr = t[currentLang];
+      const name = spot.name[currentLang] || spot.name.en;
+      const desc = spot.desc[currentLang] || spot.desc.en;
+      const tips = spot.tips[currentLang] || spot.tips.en;
+      const metro = spot.metro[currentLang] || spot.metro.en;
       const imgUrl = getImageForSpot(spot.id);
-      const imgHtml = imgUrl ? `<img class="detail-img" src="${imgUrl}" alt="${spot.name}">` : `<div style="font-size:5rem">${spot.emoji}</div>`;
-      const detailHtml = `
-        <div class="detail-header">${imgHtml}<div class="detail-title">${spot.name}</div></div>
-        <div class="detail-description">${spot.desc}</div>
-        <div class="tips-card"><strong>${t.tipsLabel}</strong><br>${spot.tips}</div>
-        <div class="metro-info">${t.metroLabel}: ${spot.metro}</div><br>
-        <a href="${spot.officialUrl}" target="_blank" rel="noopener" class="official-link">${t.officialLabel}</a>
-        <div class="back-buttons">
-          <button class="back-btn" id="back-to-home">🏠 ${t.home}</button>
-          <button class="back-btn" id="back-previous">◀ ${t.back}</button>
-        </div>
+      const imgHtml = imgUrl ? `<img class="detail-img" src="${imgUrl}" alt="${name}">` : `<div style="font-size:5rem">${spot.emoji}</div>`;
+      const html = `
+        <div class="detail-header">${imgHtml}<div class="detail-title">${name}</div></div>
+        <div class="detail-description">${desc}</div>
+        <div class="tips-card"><strong>${tr.tipsLabel}</strong><br>${tips}</div>
+        <div class="metro-info">${tr.metroLabel}: ${metro}</div><br>
+        <a href="${spot.officialUrl}" target="_blank" class="official-link">${tr.officialLabel}</a>
+        <div class="back-buttons"><button class="back-btn" id="back-to-home">🏠 ${tr.home}</button><button class="back-btn" id="back-previous">◀ ${tr.back}</button></div>
       `;
       const detailDiv = document.getElementById('detail-view');
-      detailDiv.innerHTML = detailHtml;
-      detailDiv.setAttribute('data-spot-id', spot.id);
+      detailDiv.innerHTML = html; detailDiv.setAttribute('data-spot-id', id);
       document.getElementById('home-view').classList.add('hidden');
       document.getElementById('settings-view').classList.add('hidden');
       detailDiv.classList.remove('hidden');
       document.getElementById('back-to-home')?.addEventListener('click', () => showHomeView());
       document.getElementById('back-previous')?.addEventListener('click', () => window.history.back());
-      window.history.pushState({ view: 'detail', id: spot.id }, '', `#${spot.id}`);
+      window.history.pushState({ view: 'detail', id }, '', `#${id}`);
     }
-
     function showHomeView() {
       document.getElementById('detail-view').classList.add('hidden');
       document.getElementById('settings-view').classList.add('hidden');
       document.getElementById('home-view').classList.remove('hidden');
       window.history.pushState({ view: 'home' }, '', '#home');
-      renderHomeGrid();
+      renderHome();
     }
-
     function openSettings() {
       const grid = document.getElementById('settings-grid');
       grid.innerHTML = '';
       spotsData.forEach(spot => {
-        const currentUrl = customImages[spot.id] || '';
-        const div = document.createElement('div');
-        div.className = 'settings-item';
-        div.innerHTML = `<label>${spot.emoji} ${spot.name}</label><input type="text" id="img_${spot.id}" placeholder="https://..." value="${currentUrl}">`;
+        const div = document.createElement('div'); div.className = 'settings-item';
+        div.innerHTML = `<label>${spot.emoji} ${spot.name.en}</label><input type="text" id="img_${spot.id}" placeholder="https://..." value="${customImages[spot.id] || ''}">`;
         grid.appendChild(div);
       });
       document.getElementById('home-view').classList.add('hidden');
       document.getElementById('detail-view').classList.add('hidden');
       document.getElementById('settings-view').classList.remove('hidden');
     }
-
     function saveSettings() {
       spotsData.forEach(spot => {
         const input = document.getElementById(`img_${spot.id}`);
-        if (input && input.value.trim()) {
-          customImages[spot.id] = input.value.trim();
-        } else if (input && !input.value.trim()) {
-          delete customImages[spot.id];
-        }
+        if (input && input.value.trim()) customImages[spot.id] = input.value.trim();
+        else delete customImages[spot.id];
       });
       localStorage.setItem('paris_custom_images', JSON.stringify(customImages));
-      renderHomeGrid();
-      const currentDetailId = document.getElementById('detail-view')?.getAttribute('data-spot-id');
-      if (currentDetailId && !document.getElementById('detail-view').classList.contains('hidden')) {
-        showDetailView(currentDetailId);
-      }
-      alert('Images saved!');
+      renderHome();
+      const curId = document.getElementById('detail-view').getAttribute('data-spot-id');
+      if (curId && !document.getElementById('detail-view').classList.contains('hidden')) showDetailView(curId);
+      alert(t[currentLang].saveSettings);
       showHomeView();
     }
-
     function initLangButtons() {
-      // 言語ボタンは英語のみシンプル表示（必要に応じて拡張可能だが今回は英語固定）
       const container = document.getElementById('lang-buttons');
       container.innerHTML = '';
-      const btn = document.createElement('button');
-      btn.className = 'lang-btn';
-      btn.innerHTML = `🇬🇧 English`;
-      btn.disabled = true;
-      btn.style.opacity = '0.7';
-      container.appendChild(btn);
+      for (let [code, label] of Object.entries(languages)) {
+        const btn = document.createElement('button'); btn.className = 'lang-btn';
+        btn.innerHTML = label;
+        btn.onclick = () => { currentLang = code; updateUI(); };
+        container.appendChild(btn);
+      }
     }
-
     function initTheme() {
       const stored = localStorage.getItem('theme');
       if (stored === 'light') { document.body.classList.remove('dark'); document.body.classList.add('light'); }
       else { document.body.classList.add('dark'); document.body.classList.remove('light'); }
-      document.getElementById('theme-toggle').addEventListener('click', () => {
+      document.getElementById('theme-toggle').onclick = () => {
         const isDark = document.body.classList.contains('dark');
         if (isDark) { document.body.classList.replace('dark', 'light'); localStorage.setItem('theme', 'light'); }
         else { document.body.classList.replace('light', 'dark'); localStorage.setItem('theme', 'dark'); }
-      });
+      };
     }
-
     function route() {
       const hash = window.location.hash.slice(1);
       if (hash && hash !== 'home' && spotsData.some(s => s.id === hash)) showDetailView(hash);
       else showHomeView();
     }
-
     window.addEventListener('popstate', () => {
       if (!document.getElementById('home-view').classList.contains('hidden')) {
-        if (window.location.hash === '#home') return;
         const id = window.location.hash.slice(1);
         if (id && spotsData.some(s=>s.id===id)) showDetailView(id);
         else showHomeView();
-      } else {
-        if (window.location.hash === '#home') showHomeView();
-        else route();
-      }
+      } else { if (window.location.hash === '#home') showHomeView(); else route(); }
     });
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error', err)); });
-    }
-
-    initLangButtons();
-    initTheme();
-    renderHomeGrid();
-    route();
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(e=>console.log('SW error', e)));
+    initLangButtons(); initTheme(); renderHome(); route();
     document.getElementById('settings-btn')?.addEventListener('click', openSettings);
     document.getElementById('save-settings')?.addEventListener('click', saveSettings);
     document.getElementById('close-settings')?.addEventListener('click', showHomeView);
