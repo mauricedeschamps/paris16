@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Paris 16 - パリのおしゃれな観光名所16選</title>
-  <meta name="description" content="パリの厳選された観光名所16選。詳細な説明、最寄り駅、公式サイトリンク、カスタム画像対応。シテ島を中心にGoogleマップ表示。">
+  <title>Paris 16 - Elegant Sights of Paris</title>
+  <meta name="description" content="16 selected sightseeing spots in Paris. Detailed descriptions, metro stations, official links, custom images. Google Map centered on Île de la Cité.">
   <meta name="theme-color" content="#1A2A3A">
   <link rel="apple-touch-icon" href="icons/icon-192.jpg">
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <style>
     * {
@@ -34,7 +33,6 @@
       --footer-bg: #FDFBF7cc;
       --btn-bg: #F1EFEA;
       --btn-hover: #E4DFD7;
-      --map-overlay: #FDFBF7;
     }
 
     body, body.dark {
@@ -51,7 +49,6 @@
       --footer-bg: #1A2A3Acc;
       --btn-bg: #2E445C;
       --btn-hover: #3A556E;
-      --map-overlay: #1A2A3A;
     }
 
     body {
@@ -210,20 +207,29 @@
     .detail-header {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      gap: 2rem;
       flex-wrap: wrap;
       margin-bottom: 2rem;
       border-bottom: 2px dashed var(--border);
       padding-bottom: 1.5rem;
     }
 
+    /* 詳細イメージを大きく表示 */
     .detail-img {
-      width: 140px;
-      height: 140px;
+      width: 280px;
+      height: 280px;
       object-fit: cover;
-      border-radius: 30px;
+      border-radius: 32px;
       background: var(--btn-bg);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 700px) {
+      .detail-img {
+        width: 100%;
+        height: auto;
+        max-height: 260px;
+      }
     }
 
     .detail-title {
@@ -362,11 +368,11 @@
 <body class="dark">
   <header class="app-header">
     <div class="header-inner">
-      <h1 id="app-title">✨ Paris 16 · Élégance du Voyage</h1>
+      <h1 id="app-title">✨ Paris 16 · Elegant Travel</h1>
       <div class="controls">
         <div class="lang-group" id="lang-buttons"></div>
-        <button id="settings-btn" class="settings-trigger">⚙️ <span id="settings-btn-text">画像設定</span></button>
-        <button id="theme-toggle" aria-label="Toggle theme">🌙 <span id="theme-toggle-text">Mode</span></button>
+        <button id="settings-btn" class="settings-trigger">⚙️ <span id="settings-btn-text">Image Settings</span></button>
+        <button id="theme-toggle" aria-label="Toggle theme">🌙 <span id="theme-toggle-text">Dark/Light</span></button>
       </div>
     </div>
   </header>
@@ -379,12 +385,12 @@
     <div id="detail-view" class="detail-view hidden"></div>
 
     <div id="settings-view" class="settings-panel hidden main-container">
-      <h2 id="settings-title">🖼️ 画像URLを設定</h2>
-      <p id="settings-desc">各観光スポットの画像URL（jpg/png）を入力してください。空欄の場合は絵文字が表示されます。</p>
+      <h2 id="settings-title">🖼️ Set Custom Images</h2>
+      <p id="settings-desc">Enter image URLs for each spot. Leave blank to show emoji.</p>
       <div id="settings-grid" class="settings-grid"></div>
       <div class="back-buttons">
-        <button id="save-settings" class="back-btn">💾 <span id="save-settings-text">保存して更新</span></button>
-        <button id="close-settings" class="back-btn">◀ <span id="close-settings-text">戻る</span></button>
+        <button id="save-settings" class="back-btn">💾 <span id="save-settings-text">Save & Refresh</span></button>
+        <button id="close-settings" class="back-btn">◀ <span id="close-settings-text">Back</span></button>
       </div>
     </div>
   </main>
@@ -397,18 +403,8 @@
   </footer>
 
   <script>
-    // ---------- 6言語対応データ ----------
-    const languages = {
-      en: { label: 'English', flag: '🇬🇧' },
-      fr: { label: 'Français', flag: '🇫🇷' },
-      de: { label: 'Deutsch', flag: '🇩🇪' },
-      it: { label: 'Italiano', flag: '🇮🇹' },
-      ru: { label: 'Русский', flag: '🇷🇺' },
-      ja: { label: '日本語', flag: '🇯🇵' }
-    };
-    let currentLang = 'en';
-
-    // 翻訳テキスト
+    // ---------- 言語は英語のみ（固定）だが、将来拡張に備えて構造維持 ----------
+    const currentLang = 'en';
     const translations = {
       en: {
         title: '✨ Paris 16 · Elegant Travel',
@@ -416,111 +412,26 @@
         tipsLabel: '💡 Insider Tips', metroLabel: '🚇 Nearest Metro', officialLabel: '🔗 Official Website',
         settingsTitle: '🖼️ Set Custom Images', settingsDesc: 'Enter image URLs for each spot. Leave blank to show emoji.',
         footerText: '📮 Paris Travel Concierge'
-      },
-      fr: {
-        title: '✨ Paris 16 · Voyage Élégant',
-        settingsBtn: 'Paramètres d\'image', themeBtn: 'Sombre/Clair', saveSettings: 'Enregistrer', back: 'Retour', home: 'Accueil',
-        tipsLabel: '💡 Conseils d\'initié', metroLabel: '🚇 Métro le plus proche', officialLabel: '🔗 Site officiel',
-        settingsTitle: '🖼️ Définir des images personnalisées', settingsDesc: 'Entrez l\'URL de l\'image pour chaque lieu. Laissez vide pour afficher l\'emoji.',
-        footerText: '📮 Conciergerie Parisienne'
-      },
-      de: {
-        title: '✨ Paris 16 · Eleganz Reisen',
-        settingsBtn: 'Bild-Einstellungen', themeBtn: 'Dunkel/Hell', saveSettings: 'Speichern & Aktualisieren', back: 'Zurück', home: 'Start',
-        tipsLabel: '💡 Insidertipps', metroLabel: '🚇 Nächste Métro', officialLabel: '🔗 Offizielle Website',
-        settingsTitle: '🖼️ Benutzerdefinierte Bilder', settingsDesc: 'Geben Sie Bild-URLs ein. Leer lassen für Emoji.',
-        footerText: '📮 Paris Reisekoncierge'
-      },
-      it: {
-        title: '✨ Paris 16 · Viaggio Elegante',
-        settingsBtn: 'Impostazioni Immagini', themeBtn: 'Scuro/Chiaro', saveSettings: 'Salva e Aggiorna', back: 'Indietro', home: 'Home',
-        tipsLabel: '💡 Suggerimenti locali', metroLabel: '🚇 Metro più vicina', officialLabel: '🔗 Sito Ufficiale',
-        settingsTitle: '🖼️ Imposta immagini personalizzate', settingsDesc: 'Inserisci URL immagini. Lascia vuoto per emoji.',
-        footerText: '📮 Concierge di Viaggio Parigi'
-      },
-      ru: {
-        title: '✨ Париж 16 · Элегантное путешествие',
-        settingsBtn: 'Настройки изображений', themeBtn: 'Тёмная/Светлая', saveSettings: 'Сохранить', back: 'Назад', home: 'Главная',
-        tipsLabel: '💡 Советы знатоков', metroLabel: '🚇 Ближайшее метро', officialLabel: '🔗 Официальный сайт',
-        settingsTitle: '🖼️ Установить изображения', settingsDesc: 'Введите URL изображений. Оставьте пустым для эмодзи.',
-        footerText: '📮 Парижский консьерж'
-      },
-      ja: {
-        title: '✨ パリ観光名所16選 · エレガンスの旅',
-        settingsBtn: '画像設定', themeBtn: 'ダーク/ライト', saveSettings: '保存して更新', back: '戻る', home: 'ホーム',
-        tipsLabel: '💡 おすすめポイント', metroLabel: '🚇 最寄り駅', officialLabel: '🔗 公式サイト',
-        settingsTitle: '🖼️ 画像URLを設定', settingsDesc: '各スポットの画像URLを入力してください。空欄の場合は絵文字表示。',
-        footerText: '📮 パリ観光コンシェルジュ'
       }
     };
 
-    // 観光名所16データ（6言語対応）
     const spotsData = [
-      { id: "eiffel", emoji: "🗼", officialUrl: "https://www.toureiffel.paris/",
-        metro: { en: "Champ de Mars - Tour Eiffel", fr: "Champ de Mars - Tour Eiffel", de: "Champ de Mars - Tour Eiffel", it: "Champ de Mars - Tour Eiffel", ru: "Шан-де-Марс — Тур Эйфель", ja: "シャン・ド・マルス＝トゥール・エッフェル駅" },
-        name: { en: "Eiffel Tower", fr: "Tour Eiffel", de: "Eiffelturm", it: "Torre Eiffel", ru: "Эйфелева башня", ja: "エッフェル塔" },
-        desc: { en: "Iconic wrought-iron lattice tower built by Gustave Eiffel for 1889 World's Fair. Breathtaking views of Paris.", fr: "Tour emblématique en fer forgé construite par Gustave Eiffel pour l'Exposition universelle de 1889. Vue imprenable sur Paris.", de: "Wahrzeichen aus Schmiedeeisen, erbaut von Gustave Eiffel zur Weltausstellung 1889. Atemberaubende Aussicht.", it: "Iconica torre reticolare in ferro battuto costruita da Gustave Eiffel per l'Esposizione Universale del 1889. Vista mozzafiato su Parigi.", ru: "Знаменитая решётчатая башня из кованого железа, построенная Гюставом Эйфелем к Всемирной выставке 1889 года. Захватывающий вид на Париж.", ja: "1889年パリ万博で建てられた鉄の塔。パノラマビューが絶景。" },
-        tips: { en: "Book tickets online. Visit at sunset for golden hour + sparkling lights at night.", fr: "Réservez en ligne. Visitez au coucher du soleil pour l'heure dorée et les lumières scintillantes.", de: "Tickets online buchen. Besuchen Sie bei Sonnenuntergang für die goldene Stunde.", it: "Prenota online. Visita al tramonto per l'ora d'oro e le luci scintillanti.", ru: "Бронируйте билеты онлайн. Посетите на закате.", ja: "オンライン予約必須。日没時のゴールデンアワーがおすすめ。" } },
-      { id: "louvre", emoji: "🎨", officialUrl: "https://www.louvre.fr/", metro: { en: "Palais Royal - Musée du Louvre", fr: "Palais Royal - Musée du Louvre", de: "Palais Royal - Musée du Louvre", it: "Palais Royal - Musée du Louvre", ru: "Пале-Руаяль — Лувр", ja: "パレ・ロワイヤル＝ミュゼ・デュ・ルーヴル駅" },
-        name: { en: "Louvre Museum", fr: "Musée du Louvre", de: "Louvre Museum", it: "Museo del Louvre", ru: "Лувр", ja: "ルーヴル美術館" },
-        desc: { en: "World's largest art museum, home to Mona Lisa and Venus de Milo.", fr: "Le plus grand musée d'art du monde, abritant la Joconde et la Vénus de Milo.", de: "Das größte Kunstmuseum der Welt, Heimat der Mona Lisa und Venus von Milo.", it: "Il più grande museo d'arte del mondo, casa della Gioconda e della Venere di Milo.", ru: "Крупнейший художественный музей мира, где хранятся Джоконда и Венера Милосская.", ja: "世界最大の美術館。モナリザ、ミロのヴィーナス所蔵。" },
-        tips: { en: "Go on Wednesday/Friday late opening. Enter via Carrousel du Louvre.", fr: "Allez le mercredi/vendredi soir. Entrez par le Carrousel du Louvre.", de: "Gehen Sie mittwochs/freitags spätabends. Eingang über Carrousel du Louvre.", it: "Vai il mercoledì/venerdì ad apertura serale. Entra dal Carrousel du Louvre.", ru: "Приходите в среду/пятницу вечером. Вход через Carrousel du Louvre.", ja: "水・金曜の夜間開館がおすすめ。地下の入口から。" } },
-      { id: "notre_dame", emoji: "⛪", officialUrl: "https://www.notredamedeparis.fr/", metro: { en: "Cité", fr: "Cité", de: "Cité", it: "Cité", ru: "Сите", ja: "シテ駅" },
-        name: { en: "Notre-Dame Cathedral", fr: "Cathédrale Notre-Dame", de: "Notre-Dame Kathedrale", it: "Cattedrale di Notre-Dame", ru: "Собор Парижской Богоматери", ja: "ノートルダム大聖堂" },
-        desc: { en: "Masterpiece of French Gothic architecture, reopened in 2024 after fire.", fr: "Chef-d'œuvre de l'architecture gothique française, rouvert en 2024 après l'incendie.", de: "Meisterwerk der französischen Gotik, nach dem Brand 2024 wiedereröffnet.", it: "Capolavoro dell'architettura gotica francese, riaperto nel 2024 dopo l'incendio.", ru: "Шедевр французской готики, вновь открыт в 2024 году после пожара.", ja: "ゴシック建築の傑作。2019年火災後、2024年再開。" },
-        tips: { en: "Climb the towers for gargoyles. Visit early morning.", fr: "Montez aux tours pour les gargouilles. Visitez tôt le matin.", de: "Besteigen Sie die Türme für Wasserspeier. Besuchen Sie früh morgens.", it: "Sali sulle torri per i gargoyle. Visita al mattino presto.", ru: "Поднимитесь на башни, чтобы увидеть горгулий. Посетите рано утром.", ja: "塔に登るとガーゴイルが間近。早朝が狙い目。" } },
-      { id: "arc", emoji: "🏛️", officialUrl: "https://www.paris-arc-de-triomphe.fr/", metro: { en: "Charles de Gaulle - Étoile", fr: "Charles de Gaulle - Étoile", de: "Charles de Gaulle - Étoile", it: "Charles de Gaulle - Étoile", ru: "Шарль де Голль — Этуаль", ja: "シャルル・ド・ゴール＝エトワール駅" },
-        name: { en: "Arc de Triomphe", fr: "Arc de Triomphe", de: "Triumphbogen", it: "Arco di Trionfo", ru: "Триумфальная арка", ja: "凱旋門" },
-        desc: { en: "Napoleon's triumphal arch with panoramic terrace.", fr: "Arc de Triomphe de Napoléon avec terrasse panoramique.", de: "Napoleons Triumphbogen mit Panoramaterrasse.", it: "Arco di Trionfo di Napoleone con terrazza panoramica.", ru: "Триумфальная арка Наполеона с панорамной террасой.", ja: "ナポレオンの凱旋門。屋上からの眺望。" },
-        tips: { en: "Use underpass. Sunset views over Champs-Élysées.", fr: "Utilisez le passage souterrain. Vues au coucher du soleil sur les Champs-Élysées.", de: "Benutzen Sie die Unterführung. Sonnenuntergangsblick über die Champs-Élysées.", it: "Usa il sottopassaggio. Viste al tramonto sugli Champs-Élysées.", ru: "Используйте подземный переход. Закат над Елисейскими полями.", ja: "地下道でアクセス。夕暮れのシャンゼリゼが絶景。" } },
-      { id: "montmartre", emoji: "🎭", officialUrl: "https://www.sacre-coeur-montmartre.com/", metro: { en: "Anvers / Abbesses", fr: "Anvers / Abbesses", de: "Anvers / Abbesses", it: "Anvers / Abbesses", ru: "Анвер / Аббес", ja: "アンヴェール駅 / アベッス駅" },
-        name: { en: "Montmartre & Sacré-Cœur", fr: "Montmartre et Sacré-Cœur", de: "Montmartre & Sacré-Cœur", it: "Montmartre e Sacro Cuore", ru: "Монмартр и Сакре-Кёр", ja: "モンマルトル／サクレクール寺院" },
-        desc: { en: "Historic hilltop village with white basilica and artists' square.", fr: "Village historique sur la colline avec basilique blanche et place des artistes.", de: "Historisches Hügeldorf mit weißer Basilika und Künstlerplatz.", it: "Storico villaggio sulla collina con basilica bianca e piazza degli artisti.", ru: "Историческая деревня на холме с белой базиликой и площадью художников.", ja: "白い教会と芸術家の広場がある丘。" },
-        tips: { en: "Explore Place du Tertre. Ride funicular or climb stairs.", fr: "Explorez la Place du Tertre. Prenez le funiculaire ou montez les escaliers.", de: "Erkunden Sie den Place du Tertre. Fahren Sie mit der Standseilbahn oder steigen Sie die Treppe hinauf.", it: "Esplora Place du Tertre. Prendi la funicolare o sali le scale.", ru: "Исследуйте площадь Тертр. Поднимитесь на фуникулёре или по лестнице.", ja: "テルトル広場を散策。ケーブルカーか階段で。" } },
-      { id: "champs", emoji: "🛍️", officialUrl: "https://www.leschampselysees.fr/", metro: { en: "Champs-Élysées - Clemenceau", fr: "Champs-Élysées - Clemenceau", de: "Champs-Élysées - Clemenceau", it: "Champs-Élysées - Clemenceau", ru: "Елисейские поля — Клемансо", ja: "シャンゼリゼ＝クレマンソー駅" },
-        name: { en: "Champs-Élysées", fr: "Champs-Élysées", de: "Champs-Élysées", it: "Champs-Élysées", ru: "Елисейские поля", ja: "シャンゼリゼ通り" },
-        desc: { en: "Famous avenue with luxury shops and cafes.", fr: "Avenue célèbre avec boutiques de luxe et cafés.", de: "Berühmte Allee mit Luxusgeschäften und Cafés.", it: "Famoso viale con negozi di lusso e caffè.", ru: "Знаменитый проспект с роскошными магазинами и кафе.", ja: "高級ブティック＆カフェが並ぶ大通り。" },
-        tips: { en: "Grab coffee at a terrace, visit Ladurée for macarons.", fr: "Prenez un café en terrasse, visitez Ladurée pour les macarons.", de: "Trinken Sie einen Kaffee auf der Terrasse, besuchen Sie Ladurée für Macarons.", it: "Prendi un caffè in terrazza, visita Ladurée per i macaron.", ru: "Выпейте кофе на террасе, посетите Ladurée ради макарон.", ja: "テラスカフェで休憩。ラデュレのマカロンを。" } },
-      { id: "versailles", emoji: "👑", officialUrl: "https://en.chateauversailles.fr/", metro: { en: "Versailles Château Rive Gauche", fr: "Versailles Château Rive Gauche", de: "Versailles Château Rive Gauche", it: "Versailles Château Rive Gauche", ru: "Версаль — Шато — Левый берег", ja: "ヴェルサイユ＝シャトー駅" },
-        name: { en: "Palace of Versailles", fr: "Château de Versailles", de: "Schloss Versailles", it: "Palazzo di Versailles", ru: "Версальский дворец", ja: "ヴェルサイユ宮殿" },
-        desc: { en: "Opulent royal château with Hall of Mirrors and gardens.", fr: "Château royal opulent avec Galerie des Glaces et jardins.", de: "Prächtiges königliches Schloss mit Spiegelsaal und Gärten.", it: "Sontuoso castello reale con Sala degli Specchi e giardini.", ru: "Роскошный королевский замок с Зеркальным залом и садами.", ja: "鏡の間と広大な庭園が圧巻。" },
-        tips: { en: "Buy passport ticket with gardens. Rent a bike.", fr: "Achetez un billet passeport avec jardins. Louez un vélo.", de: "Kaufen Sie ein Pass-Ticket mit Gärten. Mieten Sie ein Fahrrad.", it: "Acquista il biglietto pass con giardini. Noleggia una bici.", ru: "Купите паспортный билет с садами. Арендуйте велосипед.", ja: "庭園付きパスポートチケット。園内は自転車レンタル。" } },
-      { id: "orsay", emoji: "🖼️", officialUrl: "https://www.musee-orsay.fr/", metro: { en: "Solférino - Musée d'Orsay", fr: "Solférino - Musée d'Orsay", de: "Solférino - Musée d'Orsay", it: "Solférino - Musée d'Orsay", ru: "Сольферино — Музей д'Орсе", ja: "ソルフェリーノ＝オルセー駅" },
-        name: { en: "Musée d'Orsay", fr: "Musée d'Orsay", de: "Musée d'Orsay", it: "Musée d'Orsay", ru: "Музей д'Орсе", ja: "オルセー美術館" },
-        desc: { en: "Beaux-arts railway station turned museum, famous for Impressionists.", fr: "Gare Beaux-Arts transformée en musée, célèbre pour les impressionnistes.", de: "Bahnhof im Beaux-Arts-Stil, berühmt für Impressionisten.", it: "Stazione Beaux-Arts trasformata in museo, famosa per gli impressionisti.", ru: "Вокзал в стиле боз-ар, превращённый в музей, славится импрессионистами.", ja: "駅を改装した美術館。印象派の殿堂。" },
-        tips: { en: "Go on Thursday late opening. Start from top floor.", fr: "Allez le jeudi soir. Commencez par l'étage supérieur.", de: "Gehen Sie donnerstags spätabends. Beginnen Sie im obersten Stockwerk.", it: "Vai il giovedì ad apertura serale. Inizia dall'ultimo piano.", ru: "Приходите в четверг вечером. Начните с верхнего этажа.", ja: "木曜夜間開館。最上階から見るのがおすすめ。" } },
-      { id: "sainte_chapelle", emoji: "✨", officialUrl: "https://www.sainte-chapelle.fr/", metro: { en: "Cité", fr: "Cité", de: "Cité", it: "Cité", ru: "Сите", ja: "シテ駅" },
-        name: { en: "Sainte-Chapelle", fr: "Sainte-Chapelle", de: "Sainte-Chapelle", it: "Sainte-Chapelle", ru: "Сент-Шапель", ja: "サント・シャペル" },
-        desc: { en: "Gothic royal chapel with 1,113 stunning stained glass windows.", fr: "Chapelle royale gothique aux 1 113 magnifiques vitraux.", de: "Gotische königliche Kapelle mit 1.113 atemberaubenden Glasfenstern.", it: "Cappella reale gotica con 1.113 splendide vetrate.", ru: "Готическая королевская часовня с 1 113 потрясающими витражами.", ja: "ゴシック様式の王室礼拝堂。圧巻のステンドグラス。" },
-        tips: { en: "Visit on sunny morning. Combine with Conciergerie.", fr: "Visitez par matin ensoleillé. Combinez avec la Conciergerie.", de: "Besuchen Sie an einem sonnigen Morgen. Kombinieren Sie mit der Conciergerie.", it: "Visita in mattinata soleggiata. Abbinala alla Conciergerie.", ru: "Посетите солнечным утром. Совместите с Консьержери.", ja: "晴れた日の午前中が最高。コンシェルジュリーとセットで。" } },
-      { id: "opera_garnier", emoji: "🎭", officialUrl: "https://www.operadeparis.fr/", metro: { en: "Opéra", fr: "Opéra", de: "Opéra", it: "Opéra", ru: "Опера", ja: "オペラ駅" },
-        name: { en: "Palais Garnier", fr: "Palais Garnier", de: "Palais Garnier", it: "Palais Garnier", ru: "Опера Гарнье", ja: "パリ・オペラ座" },
-        desc: { en: "Grand 19th-century opera house with Chagall ceiling.", fr: "Grand opéra du XIXe siècle avec plafond Chagall.", de: "Großes Opernhaus des 19. Jahrhunderts mit Chagall-Decke.", it: "Grande opera dell'Ottocento con soffitto di Chagall.", ru: "Большой оперный театр XIX века с потолком Шагала.", ja: "壮大な階段とシャガール天井画。" },
-        tips: { en: "Take a self-guided tour. Grand Foyer rivals Hall of Mirrors.", fr: "Faites une visite autoguidée. Le Grand Foyer rivalise avec la Galerie des Glaces.", de: "Machen Sie eine Selbstführung. Das Grand Foyer konkurriert mit dem Spiegelsaal.", it: "Fai un tour autoguidato. Il Grand Foyer rivaleggia con la Sala degli Specchi.", ru: "Совершите самостоятельную экскурсию. Большое фойе соперничает с Зеркальным залом.", ja: "見学ツアーで大階段へ。グラン・フォワイエも必見。" } },
-      { id: "pompidou", emoji: "🎨", officialUrl: "https://www.centrepompidou.fr/", metro: { en: "Rambuteau", fr: "Rambuteau", de: "Rambuteau", it: "Rambuteau", ru: "Рамбюто", ja: "ランビュトー駅" },
-        name: { en: "Centre Pompidou", fr: "Centre Pompidou", de: "Centre Pompidou", it: "Centre Pompidou", ru: "Центр Помпиду", ja: "ポンピドゥー・センター" },
-        desc: { en: "Modern art museum with inside-out architecture.", fr: "Musée d'art moderne à l'architecture extérieure.", de: "Museum für moderne Kunst mit Inside-out-Architektur.", it: "Museo d'arte moderna con architettura inside-out.", ru: "Музей современного искусства с вывернутой архитектурой.", ja: "パイプむき出しの建物。近現代アートの殿堂。" },
-        tips: { en: "Ride external escalator for free panorama. See Stravinsky Fountain.", fr: "Prenez l'escalator extérieur pour un panorama gratuit. Voyez la Fontaine Stravinsky.", de: "Fahren Sie mit der Außenrolltreppe für eine kostenlose Panoramaaussicht. Sehen Sie den Stravinsky-Brunnen.", it: "Prendi la scala mobile esterna per un panorama gratuito. Vedi la Fontana Stravinsky.", ru: "Поднимитесь на внешнем эскалаторе для бесплатной панорамы. Посмотрите фонтан Стравинского.", ja: "外側エスカレーターでパリ眺望無料。ストラヴィンスキーの噴水。" } },
-      { id: "pantheon", emoji: "📜", officialUrl: "https://www.paris-pantheon.fr/", metro: { en: "Cardinal Lemoine", fr: "Cardinal Lemoine", de: "Cardinal Lemoine", it: "Cardinal Lemoine", ru: "Кардинал Лемуан", ja: "カルディナル・ルモワーヌ駅" },
-        name: { en: "Panthéon", fr: "Panthéon", de: "Panthéon", it: "Panthéon", ru: "Пантеон", ja: "パンテオン" },
-        desc: { en: "Neoclassical mausoleum for Voltaire, Rousseau, Hugo, Curie.", fr: "Mausolée néoclassique pour Voltaire, Rousseau, Hugo, Curie.", de: "Neoklassizistisches Mausoleum für Voltaire, Rousseau, Hugo, Curie.", it: "Mausoleo neoclassico per Voltaire, Rousseau, Hugo, Curie.", ru: "Неоклассический мавзолей для Вольтера, Руссо, Гюго, Кюри.", ja: "新古典主義の廟。ヴォルテール、ユゴー、キュリー夫人が眠る。" },
-        tips: { en: "Climb the dome for 360° view of Latin Quarter. Foucault pendulum.", fr: "Montez au dôme pour une vue à 360° sur le Quartier Latin. Pendule de Foucault.", de: "Besteigen Sie die Kuppel für eine 360°-Sicht auf das Quartier Latin. Foucaultsches Pendel.", it: "Sali sulla cupola per una vista a 360° del Quartiere Latino. Pendolo di Foucault.", ru: "Поднимитесь на купол для панорамного вида на Латинский квартал. Маятник Фуко.", ja: "ドーム展望台からラテン地区を一望。フーコーの振り子。" } },
-      { id: "luxembourg", emoji: "🌳", officialUrl: "https://www.senat.fr/visite/jardin/", metro: { en: "Luxembourg", fr: "Luxembourg", de: "Luxembourg", it: "Luxembourg", ru: "Люксембург", ja: "リュクサンブール駅" },
-        name: { en: "Luxembourg Gardens", fr: "Jardin du Luxembourg", de: "Luxembourg-Gärten", it: "Giardino del Lussemburgo", ru: "Люксембургский сад", ja: "リュクサンブール公園" },
-        desc: { en: "Elegant Parisian park with fountains and statues.", fr: "Élégant parc parisien avec fontaines et statues.", de: "Eleganter Pariser Park mit Springbrunnen und Statuen.", it: "Elegante parco parigino con fontane e statue.", ru: "Элегантный парижский парк с фонтанами и статуями.", ja: "噴水・彫刻が美しい憩いの公園。" },
-        tips: { en: "Grab a chair near Medici Fountain. Watch model sailboats.", fr: "Prenez une chaise près de la Fontaine Médicis. Regardez les voiliers miniatures.", de: "Nehmen Sie einen Stuhl in der Nähe des Medici-Brunnens. Sehen Sie Modellsegelbooten zu.", it: "Prendi una sedia vicino alla Fontana Medici. Guarda le barche a vela in miniatura.", ru: "Возьмите стул у фонтана Медичи. Посмотрите на игрушечные парусники.", ja: "メディシス噴水のそばの椅子で読書。池のボートも。" } },
-      { id: "arenes", emoji: "🏟️", officialUrl: "https://www.paris.fr/", metro: { en: "Place Monge / Jussieu", fr: "Place Monge / Jussieu", de: "Place Monge / Jussieu", it: "Place Monge / Jussieu", ru: "Плас Монж / Жюсьё", ja: "プラス・モンジュ駅" },
-        name: { en: "Arènes de Lutèce", fr: "Arènes de Lutèce", de: "Arènes de Lutèce", it: "Arènes de Lutèce", ru: "Арены Лютеции", ja: "リュテス競技場" },
-        desc: { en: "Ancient Roman amphitheater from 1st century AD, hidden gem.", fr: "Amphithéâtre romain antique du 1er siècle après J.-C., joyau caché.", de: "Antikes römisches Amphitheater aus dem 1. Jahrhundert n. Chr., verstecktes Juwel.", it: "Antico anfiteatro romano del I secolo d.C., gioiello nascosto.", ru: "Древнеримский амфитеатр I века н.э., скрытая жемчужина.", ja: "紀元後に作られたパリ最古の遺跡。無料で見学できる。" },
-        tips: { en: "Free entry, lovely spot for a picnic.", fr: "Entrée gratuite, bel endroit pour un pique-nique.", de: "Freier Eintritt, schöner Ort für ein Picknick.", it: "Ingresso gratuito, ottimo posto per un picnic.", ru: "Вход свободный, прекрасное место для пикника.", ja: "無料。ピクニックにも最適な静かな場所。" } },
-      { id: "seine_cruise", emoji: "🚢", officialUrl: "https://www.bateaux-mouches.fr/", metro: { en: "Pont de l'Alma / Châtelet", fr: "Pont de l'Alma / Châtelet", de: "Pont de l'Alma / Châtelet", it: "Pont de l'Alma / Châtelet", ru: "Пон-де-л'Альма / Шатле", ja: "ポン・ド・ラルマ駅" },
-        name: { en: "Seine River Cruise", fr: "Croisière sur la Seine", de: "Seine-Flusskreuzfahrt", it: "Crociera sulla Senna", ru: "Прогулка по Сене", ja: "セーヌ川クルーズ" },
-        desc: { en: "Scenic boat cruise passing Eiffel Tower, Louvre, Notre-Dame.", fr: "Croisière pittoresque passant devant la Tour Eiffel, le Louvre, Notre-Dame.", de: "Malerische Bootsfahrt vorbei am Eiffelturm, Louvre, Notre-Dame.", it: "Pittoresca crociera in barca che passa davanti alla Torre Eiffel, Louvre, Notre-Dame.", ru: "Живописная прогулка на лодке мимо Эйфелевой башни, Лувра, Нотр-Дама.", ja: "歴史的な橋の下をくぐり、パリのモニュメントを船上から満喫。" },
-        tips: { en: "Take an evening cruise for Illuminations.", fr: "Faites une croisière en soirée pour les illuminations.", de: "Machen Sie eine Abendkreuzfahrt für die Illuminationen.", it: "Fai una crociera serale per le illuminazioni.", ru: "Совершите вечернюю прогулку, чтобы увидеть иллюминацию.", ja: "夜景クルーズが絶品。" } },
-      { id: "catacombs", emoji: "💀", officialUrl: "https://www.catacombes.paris.fr/", metro: { en: "Denfert-Rochereau", fr: "Denfert-Rochereau", de: "Denfert-Rochereau", it: "Denfert-Rochereau", ru: "Данфер-Рошро", ja: "ダンフェール＝ロシュロー駅" },
-        name: { en: "Catacombs of Paris", fr: "Catacombes de Paris", de: "Katakomben von Paris", it: "Catacombe di Parigi", ru: "Парижские катакомбы", ja: "パリ・カタコンブ" },
-        desc: { en: "Underground ossuary holding remains of over 6 million Parisians.", fr: "Ossuaire souterrain abritant les restes de plus de 6 millions de Parisiens.", de: "Unterirdisches Beinhaus mit den Überresten von über 6 Millionen Parisern.", it: "Ossario sotterraneo che ospita i resti di oltre 6 milioni di parigini.", ru: "Подземный склеп, хранящий останки более 6 миллионов парижан.", ja: "地下の骨窟。約600万人の遺骨が納められた異色スポット。" },
-        tips: { en: "Buy tickets in advance. Bring a jacket – it's chilly underground.", fr: "Achetez vos billets à l'avance. Apportez une veste – il fait frais sous terre.", de: "Kaufen Sie Tickets im Voraus. Bringen Sie eine Jacke mit – unterirdisch ist es kühl.", it: "Acquista i biglietti in anticipo. Porta una giacca – fa fresco sottoterra.", ru: "Покупайте билеты заранее. Возьмите куртку – под землёй прохладно.", ja: "事前予約必須。地下は冷えるので上着を。" } }
+      { id: "eiffel", emoji: "🗼", officialUrl: "https://www.toureiffel.paris/", metro: "Champ de Mars - Tour Eiffel", name: "Eiffel Tower", desc: "Iconic wrought-iron lattice tower built by Gustave Eiffel for 1889 World's Fair. Breathtaking views of Paris.", tips: "Book tickets online. Visit at sunset for golden hour + sparkling lights at night." },
+      { id: "louvre", emoji: "🎨", officialUrl: "https://www.louvre.fr/", metro: "Palais Royal - Musée du Louvre", name: "Louvre Museum", desc: "World's largest art museum, home to Mona Lisa and Venus de Milo.", tips: "Go on Wednesday/Friday late opening. Enter via Carrousel du Louvre." },
+      { id: "notre_dame", emoji: "⛪", officialUrl: "https://www.notredamedeparis.fr/", metro: "Cité", name: "Notre-Dame Cathedral", desc: "Masterpiece of French Gothic architecture, reopened in 2024 after fire.", tips: "Climb the towers for gargoyles. Visit early morning." },
+      { id: "arc", emoji: "🏛️", officialUrl: "https://www.paris-arc-de-triomphe.fr/", metro: "Charles de Gaulle - Étoile", name: "Arc de Triomphe", desc: "Napoleon's triumphal arch with panoramic terrace.", tips: "Use underpass. Sunset views over Champs-Élysées." },
+      { id: "montmartre", emoji: "🎭", officialUrl: "https://www.sacre-coeur-montmartre.com/", metro: "Anvers / Abbesses", name: "Montmartre & Sacré-Cœur", desc: "Historic hilltop village with white basilica and artists' square.", tips: "Explore Place du Tertre. Ride funicular or climb stairs." },
+      { id: "champs", emoji: "🛍️", officialUrl: "https://www.leschampselysees.fr/", metro: "Champs-Élysées - Clemenceau", name: "Champs-Élysées", desc: "Famous avenue with luxury shops and cafes.", tips: "Grab coffee at a terrace, visit Ladurée for macarons." },
+      { id: "versailles", emoji: "👑", officialUrl: "https://en.chateauversailles.fr/", metro: "Versailles Château Rive Gauche", name: "Palace of Versailles", desc: "Opulent royal château with Hall of Mirrors and gardens.", tips: "Buy passport ticket with gardens. Rent a bike." },
+      { id: "orsay", emoji: "🖼️", officialUrl: "https://www.musee-orsay.fr/", metro: "Solférino - Musée d'Orsay", name: "Musée d'Orsay", desc: "Beaux-arts railway station turned museum, famous for Impressionists.", tips: "Go on Thursday late opening. Start from top floor." },
+      { id: "sainte_chapelle", emoji: "✨", officialUrl: "https://www.sainte-chapelle.fr/", metro: "Cité", name: "Sainte-Chapelle", desc: "Gothic royal chapel with 1,113 stunning stained glass windows.", tips: "Visit on sunny morning. Combine with Conciergerie." },
+      { id: "opera_garnier", emoji: "🎭", officialUrl: "https://www.operadeparis.fr/", metro: "Opéra", name: "Palais Garnier", desc: "Grand 19th-century opera house with Chagall ceiling.", tips: "Take a self-guided tour. Grand Foyer rivals Hall of Mirrors." },
+      { id: "pompidou", emoji: "🎨", officialUrl: "https://www.centrepompidou.fr/", metro: "Rambuteau", name: "Centre Pompidou", desc: "Modern art museum with inside-out architecture.", tips: "Ride external escalator for free panorama. See Stravinsky Fountain." },
+      { id: "pantheon", emoji: "📜", officialUrl: "https://www.paris-pantheon.fr/", metro: "Cardinal Lemoine", name: "Panthéon", desc: "Neoclassical mausoleum for Voltaire, Rousseau, Hugo, Curie.", tips: "Climb the dome for 360° view of Latin Quarter. Foucault pendulum." },
+      { id: "luxembourg", emoji: "🌳", officialUrl: "https://www.senat.fr/visite/jardin/", metro: "Luxembourg", name: "Luxembourg Gardens", desc: "Elegant Parisian park with fountains and statues.", tips: "Grab a chair near Medici Fountain. Watch model sailboats." },
+      { id: "arenes", emoji: "🏟️", officialUrl: "https://www.paris.fr/", metro: "Place Monge / Jussieu", name: "Arènes de Lutèce", desc: "Ancient Roman amphitheater from 1st century AD, hidden gem.", tips: "Free entry, lovely spot for a picnic." },
+      { id: "seine_cruise", emoji: "🚢", officialUrl: "https://www.bateaux-mouches.fr/", metro: "Pont de l'Alma / Châtelet", name: "Seine River Cruise", desc: "Scenic boat cruise passing Eiffel Tower, Louvre, Notre-Dame.", tips: "Take an evening cruise for Illuminations." },
+      { id: "catacombs", emoji: "💀", officialUrl: "https://www.catacombes.paris.fr/", metro: "Denfert-Rochereau", name: "Catacombs of Paris", desc: "Underground ossuary holding remains of over 6 million Parisians.", tips: "Buy tickets in advance. Bring a jacket – it's chilly underground." }
     ];
 
     let customImages = JSON.parse(localStorage.getItem('paris_custom_images')) || {};
@@ -530,7 +441,7 @@
     }
 
     function updateUILanguage() {
-      const t = translations[currentLang];
+      const t = translations.en;
       document.getElementById('app-title').innerText = t.title;
       document.getElementById('settings-btn-text').innerText = t.settingsBtn;
       document.getElementById('theme-toggle-text').innerText = t.themeBtn;
@@ -551,11 +462,10 @@
       spotsData.forEach(spot => {
         const card = document.createElement('div');
         card.className = 'spot-card';
-        const displayName = spot.name[currentLang] || spot.name.en;
-        const descText = (spot.desc[currentLang] || spot.desc.en).substring(0, 80);
+        const descText = spot.desc.substring(0, 80);
         const imgUrl = getImageForSpot(spot.id);
-        const imgHtml = imgUrl ? `<img class="spot-img" src="${imgUrl}" alt="${displayName}" loading="lazy">` : `<div class="spot-emoji">${spot.emoji}</div>`;
-        card.innerHTML = `${imgHtml}<div class="spot-name">${displayName}</div><div class="spot-desc">${descText}...</div>`;
+        const imgHtml = imgUrl ? `<img class="spot-img" src="${imgUrl}" alt="${spot.name}" loading="lazy">` : `<div class="spot-emoji">${spot.emoji}</div>`;
+        card.innerHTML = `${imgHtml}<div class="spot-name">${spot.name}</div><div class="spot-desc">${descText}...</div>`;
         card.addEventListener('click', () => showDetailView(spot.id));
         container.appendChild(card);
       });
@@ -564,18 +474,14 @@
     function showDetailView(spotId) {
       const spot = spotsData.find(s => s.id === spotId);
       if (!spot) return;
-      const t = translations[currentLang];
-      const name = spot.name[currentLang] || spot.name.en;
-      const desc = spot.desc[currentLang] || spot.desc.en;
-      const tips = spot.tips[currentLang] || spot.tips.en;
-      const metro = spot.metro[currentLang] || spot.metro.en;
+      const t = translations.en;
       const imgUrl = getImageForSpot(spot.id);
-      const imgHtml = imgUrl ? `<img class="detail-img" src="${imgUrl}" alt="${name}">` : `<div style="font-size:5rem">${spot.emoji}</div>`;
+      const imgHtml = imgUrl ? `<img class="detail-img" src="${imgUrl}" alt="${spot.name}">` : `<div style="font-size:5rem">${spot.emoji}</div>`;
       const detailHtml = `
-        <div class="detail-header">${imgHtml}<div class="detail-title">${name}</div></div>
-        <div class="detail-description">${desc}</div>
-        <div class="tips-card"><strong>${t.tipsLabel}</strong><br>${tips}</div>
-        <div class="metro-info">${t.metroLabel}: ${metro}</div><br>
+        <div class="detail-header">${imgHtml}<div class="detail-title">${spot.name}</div></div>
+        <div class="detail-description">${spot.desc}</div>
+        <div class="tips-card"><strong>${t.tipsLabel}</strong><br>${spot.tips}</div>
+        <div class="metro-info">${t.metroLabel}: ${spot.metro}</div><br>
         <a href="${spot.officialUrl}" target="_blank" rel="noopener" class="official-link">${t.officialLabel}</a>
         <div class="back-buttons">
           <button class="back-btn" id="back-to-home">🏠 ${t.home}</button>
@@ -605,11 +511,10 @@
       const grid = document.getElementById('settings-grid');
       grid.innerHTML = '';
       spotsData.forEach(spot => {
-        const name = spot.name.en;
         const currentUrl = customImages[spot.id] || '';
         const div = document.createElement('div');
         div.className = 'settings-item';
-        div.innerHTML = `<label>${spot.emoji} ${name}</label><input type="text" id="img_${spot.id}" placeholder="https://..." value="${currentUrl}">`;
+        div.innerHTML = `<label>${spot.emoji} ${spot.name}</label><input type="text" id="img_${spot.id}" placeholder="https://..." value="${currentUrl}">`;
         grid.appendChild(div);
       });
       document.getElementById('home-view').classList.add('hidden');
@@ -632,20 +537,20 @@
       if (currentDetailId && !document.getElementById('detail-view').classList.contains('hidden')) {
         showDetailView(currentDetailId);
       }
-      alert(translations[currentLang].saveSettings);
+      alert('Images saved!');
       showHomeView();
     }
 
     function initLangButtons() {
+      // 言語ボタンは英語のみシンプル表示（必要に応じて拡張可能だが今回は英語固定）
       const container = document.getElementById('lang-buttons');
       container.innerHTML = '';
-      for (const [code, data] of Object.entries(languages)) {
-        const btn = document.createElement('button');
-        btn.className = 'lang-btn';
-        btn.innerHTML = `${data.flag} ${data.label}`;
-        btn.addEventListener('click', () => { currentLang = code; updateUILanguage(); });
-        container.appendChild(btn);
-      }
+      const btn = document.createElement('button');
+      btn.className = 'lang-btn';
+      btn.innerHTML = `🇬🇧 English`;
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+      container.appendChild(btn);
     }
 
     function initTheme() {
