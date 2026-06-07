@@ -26,19 +26,18 @@
     button, .lang-btn, .settings-trigger, .copy-btn { background-color: var(--btn-bg); border: 1px solid var(--border); padding: 0.45rem 1rem; border-radius: 60px; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: var(--text); transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.4rem; backdrop-filter: blur(4px); }
     button:hover, .lang-btn:hover, .settings-trigger:hover, .copy-btn:hover { background-color: var(--btn-hover); transform: translateY(-2px); border-color: var(--gold); }
     .main-container { max-width: 1400px; margin: 2rem auto; padding: 0 1.5rem; }
-    /* 4x4 グリッドレイアウト (縦4横4) */
+    /* 元の4×4グリッド (縦4行 × 横スクロールで4列以上) 完全再現 */
     .spot-slider { 
       display: grid; 
-      grid-template-columns: repeat(4, 1fr); 
+      grid-template-rows: repeat(4, auto); 
+      grid-auto-flow: column; 
       gap: 1.8rem; 
-      width: 100%;
+      overflow-x: auto; 
+      scroll-snap-type: x mandatory; 
+      padding-bottom: 1.5rem; 
+      scrollbar-width: thin;
     }
-    @media (max-width: 1024px) {
-      .spot-slider { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-    }
-    @media (max-width: 640px) {
-      .spot-slider { grid-template-columns: 1fr; gap: 1.2rem; }
-    }
+    .spot-slider::-webkit-scrollbar { height: 5px; }
     .spot-card { 
       scroll-snap-align: start; 
       background: var(--surface); 
@@ -53,8 +52,10 @@
       text-align: center; 
       position: relative;
       cursor: pointer;
+      width: 270px; /* 元のコードのminmaxから固定幅に近いが、autoでも可 */
     }
     .spot-card:hover { transform: translateY(-6px); box-shadow: 0 20px 30px rgba(0,0,0,0.2); border-color: var(--gold); }
+    /* ドラッグハンドル */
     .drag-handle-wrapper {
       width: 100%;
       display: flex;
@@ -75,14 +76,14 @@
     }
     .drag-handle:active { cursor: grabbing; }
     .drag-handle:hover { background: var(--btn-hover); color: var(--gold); }
-    .spot-img { width: 100%; height: 160px; object-fit: cover; border-radius: 24px; margin-bottom: 0.8rem; background-color: var(--btn-bg); }
-    .spot-emoji { font-size: 3.5rem; margin: 0.2rem 0 0.5rem; }
+    .spot-img { width: 100%; height: 160px; object-fit: cover; border-radius: 24px; margin-bottom: 1rem; background-color: var(--btn-bg); }
+    .spot-emoji { font-size: 3.5rem; margin: 0.2rem 0; }
     .spot-name { font-size: 1.3rem; font-weight: 700; margin: 0.6rem 0 0.3rem; font-family: 'Playfair Display', serif; }
     .spot-desc { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.4; }
     .detail-view { max-width: 1100px; margin: 1rem auto; background: var(--surface); border-radius: 40px; padding: 2rem; border: 1px solid var(--border); box-shadow: var(--card-shadow); }
     .detail-header { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem; border-bottom: 2px dashed var(--border); padding-bottom: 1.5rem; }
     .detail-img { width: 280px; height: 280px; object-fit: cover; border-radius: 32px; background: var(--btn-bg); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-    @media (max-width: 700px) { .detail-img { width: 100%; height: auto; max-height: 260px; } .detail-view { padding: 1.2rem; } .detail-header { flex-direction: column; text-align: center; } .detail-title { font-size: 1.7rem; } h1 { font-size: 1.2rem; } }
+    @media (max-width: 700px) { .detail-img { width: 100%; height: auto; max-height: 260px; } .detail-view { padding: 1.2rem; } .detail-header { flex-direction: column; text-align: center; } .detail-title { font-size: 1.7rem; } h1 { font-size: 1.2rem; } .spot-card { width: 240px; } }
     .detail-title { font-size: 2.2rem; font-weight: 700; font-family: 'Playfair Display', serif; }
     .detail-description { margin: 1rem 0; line-height: 1.7; font-size: 1rem; }
     .tips-card { background: var(--accent-light); padding: 1.2rem; border-radius: 28px; margin: 1rem 0; border-left: 4px solid var(--gold); }
@@ -140,7 +141,7 @@
   </footer>
   <div id="copy-toast" class="toast-msg">Copied!</div>
   <script>
-    // ---------- 言語リソース (コピー文言追加) ----------
+    // ======================== 言語データ ========================
     const languages = { en:'🇬🇧 English', fr:'🇫🇷 Français', de:'🇩🇪 Deutsch', it:'🇮🇹 Italiano', ru:'🇷🇺 Русский', ja:'🇯🇵 日本語' };
     let currentLang = 'en';
     const t = {
@@ -152,7 +153,7 @@
       ja: { title:'✨ パリ観光名所16選 · エレガンスの旅', settingsBtn:'画像設定', themeBtn:'ダーク/ライト', saveSettings:'保存して更新', back:'戻る', home:'ホーム', tipsLabel:'💡 おすすめポイント', metroLabel:'🚇 最寄り駅', officialLabel:'🔗 公式サイト', settingsTitle:'🖼️ 画像URLを設定', settingsDesc:'各スポットの画像URLを入力。空欄は絵文字表示。', footerText:'📮 パリ観光コンシェルジュ', copyBtn:'📋 コピー', copySuccess:'コピーしました！' }
     };
     
-    // スポットデータ (16個)
+    // スポットデータ (16個 完全オリジナル)
     const spotsData = [
       { id:"eiffel", emoji:"🗼", officialUrl:"https://www.toureiffel.paris/", metro:{en:"Champ de Mars - Tour Eiffel",fr:"Champ de Mars - Tour Eiffel",de:"Champ de Mars - Tour Eiffel",it:"Champ de Mars - Tour Eiffel",ru:"Шан-де-Марс — Тур Эйфель",ja:"シャン・ド・マルス＝トゥール・エッフェル駅"}, name:{en:"Eiffel Tower",fr:"Tour Eiffel",de:"Eiffelturm",it:"Torre Eiffel",ru:"Эйфелева башня",ja:"エッフェル塔"}, desc:{en:"Iconic wrought-iron tower built for 1889 World's Fair. Breathtaking views.",fr:"Tour emblématique en fer forgé. Vue imprenable.",de:"Wahrzeichen aus Schmiedeeisen. Atemberaubende Aussicht.",it:"Iconica torre in ferro battuto. Vista mozzafiato.",ru:"Знаменитая башня. Захватывающий вид.",ja:"1889年パリ万博の鉄塔。絶景。"}, tips:{en:"Book online. Sunset & sparkling lights.",fr:"Réservez en ligne. Coucher du soleil.",de:"Online buchen. Sonnenuntergang.",it:"Prenota online. Tramonto.",ru:"Бронируйте онлайн. Закат.",ja:"オンライン予約必須。日没時がおすすめ。"}},
       { id:"louvre", emoji:"🎨", officialUrl:"https://www.louvre.fr/", metro:{en:"Palais Royal - Musée du Louvre",fr:"Palais Royal - Musée du Louvre",de:"Palais Royal - Musée du Louvre",it:"Palais Royal - Musée du Louvre",ru:"Пале-Руаяль — Лувр",ja:"パレ・ロワイヤル＝ミュゼ・デュ・ルーヴル駅"}, name:{en:"Louvre Museum",fr:"Musée du Louvre",de:"Louvre Museum",it:"Museo del Louvre",ru:"Лувр",ja:"ルーヴル美術館"}, desc:{en:"World's largest art museum, home to Mona Lisa.",fr:"Plus grand musée d'art, Joconde.",de:"Größtes Kunstmuseum, Mona Lisa.",it:"Museo più grande, Gioconda.",ru:"Крупнейший музей, Джоконда.",ja:"世界最大の美術館。モナリザ。"}, tips:{en:"Late opening Wed/Fri. Enter via Carrousel.",fr:"Ouvert tard mer/ven. Entrée Carrousel.",de:"Spätabends Mi/Fr. Eingang Carrousel.",it:"Aperto tardi mer/ven. Ingresso Carrousel.",ru:"Вечер ср/пт. Вход через Carrousel.",ja:"水・金曜夜間開館。地下の入口から。"}},
@@ -176,11 +177,10 @@
     let sortableInstance = null;
     const ORDER_STORAGE_KEY = 'paris_spots_order';
     
+    // 順序管理 (ID配列)
     function getStoredOrder() {
       const stored = localStorage.getItem(ORDER_STORAGE_KEY);
-      if (stored) {
-        try { const arr = JSON.parse(stored); if (Array.isArray(arr) && arr.length === spotsData.length) return arr; } catch(e) {}
-      }
+      if (stored) { try { const arr = JSON.parse(stored); if (Array.isArray(arr) && arr.length === spotsData.length) return arr; } catch(e) {} }
       return null;
     }
     function setStoredOrder(orderArray) { localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(orderArray)); }
@@ -194,12 +194,14 @@
     function saveOrderFromDOM() {
       const cards = document.querySelectorAll('#spot-slider .spot-card');
       if (cards.length === 0) return;
-      const newOrder = Array.from(cards).map(c => c.dataset.id);
+      const newOrder = Array.from(cards).map(card => card.dataset.id);
       if (newOrder.length === spotsData.length) setStoredOrder(newOrder);
     }
-    function getImageForSpot(id) { return customImages[id] || null; }
-    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m;}); }
     
+    function getImageForSpot(id) { return customImages[id] || null; }
+    function escapeHtml(str) { return str.replace(/[&<>]/g, m => (m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'))); }
+    
+    // カード生成 (ドラッグハンドル付き)
     function createCardElement(spot) {
       const card = document.createElement('div'); card.className = 'spot-card'; card.setAttribute('data-id', spot.id);
       const name = spot.name[currentLang] || spot.name.en;
@@ -257,45 +259,35 @@
       alert(t[currentLang].saveSettings); showHomeView();
     }
     
-    // ---------- コピー機能 (ホーム画面 or 詳細画面) ----------
+    // コピー機能
     function showToast(msg) {
       const toast = document.getElementById('copy-toast');
       toast.textContent = msg || t[currentLang].copySuccess;
       toast.style.opacity = '1';
-      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+      setTimeout(() => toast.style.opacity = '0', 2000);
     }
     async function copyCurrentContent() {
       const isHome = !document.getElementById('home-view').classList.contains('hidden');
       const isDetail = !document.getElementById('detail-view').classList.contains('hidden');
       let textToCopy = '';
       if (isDetail) {
-        // 詳細画面：スポット名・説明・ヒント・メトロ・公式サイトを整形
         const detailDiv = document.getElementById('detail-view');
         const title = detailDiv.querySelector('.detail-title')?.innerText || '';
         const desc = detailDiv.querySelector('.detail-description')?.innerText || '';
         const tipsElem = detailDiv.querySelector('.tips-card');
-        let tipsText = '';
-        if(tipsElem) tipsText = tipsElem.innerText.replace(/^💡\s*/, '');
+        let tipsText = tipsElem ? tipsElem.innerText.replace(/^💡\s*/, '') : '';
         const metroElem = detailDiv.querySelector('.metro-info');
         let metroText = metroElem ? metroElem.innerText : '';
         const officialLink = detailDiv.querySelector('.official-link')?.href || '';
-        textToCopy = `📍 ${title}\n\n📖 ${desc}\n\n💡 ${tipsText}\n\n${metroText}\n\n🔗 公式サイト: ${officialLink}`;
+        textToCopy = `📍 ${title}\n\n📖 ${desc}\n\n💡 ${tipsText}\n\n${metroText}\n\n🔗 Official: ${officialLink}`;
       } else if (isHome) {
-        // ホーム画面：現在表示されているカードのリストを順番にコピー (番号付き)
         const cards = document.querySelectorAll('#spot-slider .spot-card');
-        const spotNames = Array.from(cards).map((card, idx) => {
-          const nameEl = card.querySelector('.spot-name');
-          return `${idx+1}. ${nameEl?.innerText || ''}`;
-        });
-        if (spotNames.length) textToCopy = `✨ パリ観光名所16選 (並び順)\n${spotNames.join('\n')}`;
-        else textToCopy = '観光スポットがありません。';
+        const spotNames = Array.from(cards).map((card, idx) => `${idx+1}. ${card.querySelector('.spot-name')?.innerText || ''}`);
+        textToCopy = `✨ Paris 16 Sights (current order)\n${spotNames.join('\n')}`;
       } else {
-        textToCopy = document.title + ' - ' + window.location.href;
+        textToCopy = document.title;
       }
-      try {
-        await navigator.clipboard.writeText(textToCopy);
-        showToast();
-      } catch (err) { alert('コピーに失敗しました'); }
+      try { await navigator.clipboard.writeText(textToCopy); showToast(); } catch(e) { alert('Copy failed'); }
     }
     
     function updateUI() {
