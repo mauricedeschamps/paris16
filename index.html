@@ -11,6 +11,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- SortableJS 軽量ドラッグ＆ドロップ -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
     body.light { --bg: #FDFBF7; --surface: #FFFFFF; --text: #2C3E50; --text-secondary: #6C7A89; --border: #E8E3D9; --accent: #9B2A3E; --accent-light: #F4E3E5; --gold: #C5A059; --card-shadow: 0 12px 28px rgba(0,0,0,0.06); --header-bg: #FDFBF7cc; --footer-bg: #FDFBF7cc; --btn-bg: #F1EFEA; --btn-hover: #E4DFD7; }
@@ -21,21 +23,66 @@
     .header-inner { max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.8rem; }
     h1 { font-size: 1.7rem; font-weight: 600; background: linear-gradient(135deg, var(--gold), var(--accent)); background-clip: text; -webkit-background-clip: text; color: transparent; }
     .controls { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
-    button, .lang-btn, .settings-trigger { background-color: var(--btn-bg); border: 1px solid var(--border); padding: 0.45rem 1rem; border-radius: 60px; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: var(--text); transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.4rem; backdrop-filter: blur(4px); }
-    button:hover, .lang-btn:hover, .settings-trigger:hover { background-color: var(--btn-hover); transform: translateY(-2px); border-color: var(--gold); }
+    button, .lang-btn, .settings-trigger, .copy-btn { background-color: var(--btn-bg); border: 1px solid var(--border); padding: 0.45rem 1rem; border-radius: 60px; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: var(--text); transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.4rem; backdrop-filter: blur(4px); }
+    button:hover, .lang-btn:hover, .settings-trigger:hover, .copy-btn:hover { background-color: var(--btn-hover); transform: translateY(-2px); border-color: var(--gold); }
     .main-container { max-width: 1400px; margin: 2rem auto; padding: 0 1.5rem; }
-    .spot-slider { display: grid; grid-template-rows: repeat(4, auto); grid-auto-flow: column; grid-auto-columns: minmax(270px, 300px); gap: 1.8rem; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 1.5rem; scrollbar-width: thin; }
-    .spot-slider::-webkit-scrollbar { height: 5px; }
-    .spot-card { scroll-snap-align: start; background: var(--surface); border-radius: 32px; padding: 1.2rem; box-shadow: var(--card-shadow); cursor: pointer; transition: all 0.25s ease; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; text-align: center; }
+    /* 4x4 グリッドレイアウト (縦4横4) */
+    .spot-slider { 
+      display: grid; 
+      grid-template-columns: repeat(4, 1fr); 
+      gap: 1.8rem; 
+      width: 100%;
+    }
+    @media (max-width: 1024px) {
+      .spot-slider { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    }
+    @media (max-width: 640px) {
+      .spot-slider { grid-template-columns: 1fr; gap: 1.2rem; }
+    }
+    .spot-card { 
+      scroll-snap-align: start; 
+      background: var(--surface); 
+      border-radius: 32px; 
+      padding: 1.2rem; 
+      box-shadow: var(--card-shadow); 
+      transition: all 0.25s ease; 
+      border: 1px solid var(--border); 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      text-align: center; 
+      position: relative;
+      cursor: pointer;
+    }
     .spot-card:hover { transform: translateY(-6px); box-shadow: 0 20px 30px rgba(0,0,0,0.2); border-color: var(--gold); }
-    .spot-img { width: 100%; height: 160px; object-fit: cover; border-radius: 24px; margin-bottom: 1rem; background-color: var(--btn-bg); }
-    .spot-emoji { font-size: 3.5rem; margin: 0.2rem 0; }
+    .drag-handle-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 0.5rem;
+      cursor: grab;
+      user-select: none;
+    }
+    .drag-handle {
+      font-size: 1.4rem;
+      line-height: 1;
+      padding: 0.2rem 0.4rem;
+      border-radius: 20px;
+      background: var(--btn-bg);
+      color: var(--text-secondary);
+      transition: background 0.2s;
+      cursor: grab;
+    }
+    .drag-handle:active { cursor: grabbing; }
+    .drag-handle:hover { background: var(--btn-hover); color: var(--gold); }
+    .spot-img { width: 100%; height: 160px; object-fit: cover; border-radius: 24px; margin-bottom: 0.8rem; background-color: var(--btn-bg); }
+    .spot-emoji { font-size: 3.5rem; margin: 0.2rem 0 0.5rem; }
     .spot-name { font-size: 1.3rem; font-weight: 700; margin: 0.6rem 0 0.3rem; font-family: 'Playfair Display', serif; }
     .spot-desc { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.4; }
     .detail-view { max-width: 1100px; margin: 1rem auto; background: var(--surface); border-radius: 40px; padding: 2rem; border: 1px solid var(--border); box-shadow: var(--card-shadow); }
     .detail-header { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem; border-bottom: 2px dashed var(--border); padding-bottom: 1.5rem; }
     .detail-img { width: 280px; height: 280px; object-fit: cover; border-radius: 32px; background: var(--btn-bg); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-    @media (max-width: 700px) { .detail-img { width: 100%; height: auto; max-height: 260px; } .spot-slider { grid-auto-columns: minmax(240px, 260px); gap: 1rem; } .detail-view { padding: 1.2rem; } .detail-header { flex-direction: column; text-align: center; } .detail-title { font-size: 1.7rem; } h1 { font-size: 1.2rem; } }
+    @media (max-width: 700px) { .detail-img { width: 100%; height: auto; max-height: 260px; } .detail-view { padding: 1.2rem; } .detail-header { flex-direction: column; text-align: center; } .detail-title { font-size: 1.7rem; } h1 { font-size: 1.2rem; } }
     .detail-title { font-size: 2.2rem; font-weight: 700; font-family: 'Playfair Display', serif; }
     .detail-description { margin: 1rem 0; line-height: 1.7; font-size: 1rem; }
     .tips-card { background: var(--accent-light); padding: 1.2rem; border-radius: 28px; margin: 1rem 0; border-left: 4px solid var(--gold); }
@@ -51,6 +98,13 @@
     iframe { width: 100%; height: 280px; border: 0; display: block; }
     .app-footer { text-align: center; padding: 2rem 1rem; margin-top: 2rem; border-top: 1px solid var(--border); background-color: var(--footer-bg); font-size: 0.9rem; }
     .hidden { display: none; }
+    .sortable-drag { opacity: 0.5; cursor: grabbing; }
+    .toast-msg {
+      position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+      background: var(--accent); color: white; padding: 8px 20px; border-radius: 40px;
+      font-size: 0.85rem; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: none; opacity: 0; transition: opacity 0.2s;
+    }
   </style>
 </head>
 <body class="dark">
@@ -59,6 +113,7 @@
       <h1 id="app-title">✨ Paris 16 · Elegant Travel</h1>
       <div class="controls">
         <div class="lang-group" id="lang-buttons"></div>
+        <button id="copy-btn" class="copy-btn">📋 <span id="copy-text">Copy</span></button>
         <button id="settings-btn" class="settings-trigger">⚙️ <span id="settings-btn-text">Image Settings</span></button>
         <button id="theme-toggle">🌙 <span id="theme-toggle-text">Dark/Light</span></button>
       </div>
@@ -83,17 +138,21 @@
     </div>
     <div id="footer-text">📮 Paris Travel Concierge<br><a href="mailto:mementomorikatsu@gmail.com">mementomorikatsu@gmail.com</a></div>
   </footer>
+  <div id="copy-toast" class="toast-msg">Copied!</div>
   <script>
+    // ---------- 言語リソース (コピー文言追加) ----------
     const languages = { en:'🇬🇧 English', fr:'🇫🇷 Français', de:'🇩🇪 Deutsch', it:'🇮🇹 Italiano', ru:'🇷🇺 Русский', ja:'🇯🇵 日本語' };
     let currentLang = 'en';
     const t = {
-      en: { title:'✨ Paris 16 · Elegant Travel', settingsBtn:'Image Settings', themeBtn:'Dark/Light', saveSettings:'Save & Refresh', back:'Back', home:'Home', tipsLabel:'💡 Insider Tips', metroLabel:'🚇 Nearest Metro', officialLabel:'🔗 Official Website', settingsTitle:'🖼️ Set Custom Images', settingsDesc:'Enter image URLs. Leave blank for emoji.', footerText:'📮 Paris Travel Concierge' },
-      fr: { title:'✨ Paris 16 · Voyage Élégant', settingsBtn:'Paramètres image', themeBtn:'Sombre/Clair', saveSettings:'Enregistrer', back:'Retour', home:'Accueil', tipsLabel:'💡 Conseils', metroLabel:'🚇 Métro', officialLabel:'🔗 Site officiel', settingsTitle:'🖼️ Images personnalisées', settingsDesc:'Entrez les URLs des images. Laissez vide pour emoji.', footerText:'📮 Conciergerie Parisienne' },
-      de: { title:'✨ Paris 16 · Eleganz Reisen', settingsBtn:'Bild-Einstell.', themeBtn:'Dunkel/Hell', saveSettings:'Speichern', back:'Zurück', home:'Start', tipsLabel:'💡 Tipps', metroLabel:'🚇 Métro', officialLabel:'🔗 Offiz. Website', settingsTitle:'🖼️ Benutzerdef. Bilder', settingsDesc:'Bild-URLs eingeben. Leer für Emoji.', footerText:'📮 Paris Reisekoncierge' },
-      it: { title:'✨ Paris 16 · Viaggio Elegante', settingsBtn:'Impostaz. Immagini', themeBtn:'Scuro/Chiaro', saveSettings:'Salva', back:'Indietro', home:'Home', tipsLabel:'💡 Consigli', metroLabel:'🚇 Metro', officialLabel:'🔗 Sito Ufficiale', settingsTitle:'🖼️ Immagini personalizzate', settingsDesc:'Inserisci URL immagini. Lascia vuoto per emoji.', footerText:'📮 Concierge di Viaggio Parigi' },
-      ru: { title:'✨ Париж 16 · Элегантное путешествие', settingsBtn:'Настройки изображений', themeBtn:'Тёмная/Светлая', saveSettings:'Сохранить', back:'Назад', home:'Главная', tipsLabel:'💡 Советы', metroLabel:'🚇 Метро', officialLabel:'🔗 Офиц. сайт', settingsTitle:'🖼️ Установить изображения', settingsDesc:'Введите URL изображений. Пусто для эмодзи.', footerText:'📮 Парижский консьерж' },
-      ja: { title:'✨ パリ観光名所16選 · エレガンスの旅', settingsBtn:'画像設定', themeBtn:'ダーク/ライト', saveSettings:'保存して更新', back:'戻る', home:'ホーム', tipsLabel:'💡 おすすめポイント', metroLabel:'🚇 最寄り駅', officialLabel:'🔗 公式サイト', settingsTitle:'🖼️ 画像URLを設定', settingsDesc:'各スポットの画像URLを入力。空欄は絵文字表示。', footerText:'📮 パリ観光コンシェルジュ' }
+      en: { title:'✨ Paris 16 · Elegant Travel', settingsBtn:'Image Settings', themeBtn:'Dark/Light', saveSettings:'Save & Refresh', back:'Back', home:'Home', tipsLabel:'💡 Insider Tips', metroLabel:'🚇 Nearest Metro', officialLabel:'🔗 Official Website', settingsTitle:'🖼️ Set Custom Images', settingsDesc:'Enter image URLs. Leave blank for emoji.', footerText:'📮 Paris Travel Concierge', copyBtn:'📋 Copy Info', copySuccess:'Copied to clipboard!' },
+      fr: { title:'✨ Paris 16 · Voyage Élégant', settingsBtn:'Paramètres image', themeBtn:'Sombre/Clair', saveSettings:'Enregistrer', back:'Retour', home:'Accueil', tipsLabel:'💡 Conseils', metroLabel:'🚇 Métro', officialLabel:'🔗 Site officiel', settingsTitle:'🖼️ Images personnalisées', settingsDesc:'Entrez les URLs des images. Laissez vide pour emoji.', footerText:'📮 Conciergerie Parisienne', copyBtn:'📋 Copier', copySuccess:'Copié !' },
+      de: { title:'✨ Paris 16 · Eleganz Reisen', settingsBtn:'Bild-Einstell.', themeBtn:'Dunkel/Hell', saveSettings:'Speichern', back:'Zurück', home:'Start', tipsLabel:'💡 Tipps', metroLabel:'🚇 Métro', officialLabel:'🔗 Offiz. Website', settingsTitle:'🖼️ Benutzerdef. Bilder', settingsDesc:'Bild-URLs eingeben. Leer für Emoji.', footerText:'📮 Paris Reisekoncierge', copyBtn:'📋 Kopieren', copySuccess:'In die Zwischenablage kopiert!' },
+      it: { title:'✨ Paris 16 · Viaggio Elegante', settingsBtn:'Impostaz. Immagini', themeBtn:'Scuro/Chiaro', saveSettings:'Salva', back:'Indietro', home:'Home', tipsLabel:'💡 Consigli', metroLabel:'🚇 Metro', officialLabel:'🔗 Sito Ufficiale', settingsTitle:'🖼️ Immagini personalizzate', settingsDesc:'Inserisci URL immagini. Lascia vuoto per emoji.', footerText:'📮 Concierge di Viaggio Parigi', copyBtn:'📋 Copia', copySuccess:'Copiato negli appunti!' },
+      ru: { title:'✨ Париж 16 · Элегантное путешествие', settingsBtn:'Настройки изображений', themeBtn:'Тёмная/Светлая', saveSettings:'Сохранить', back:'Назад', home:'Главная', tipsLabel:'💡 Советы', metroLabel:'🚇 Метро', officialLabel:'🔗 Офиц. сайт', settingsTitle:'🖼️ Установить изображения', settingsDesc:'Введите URL изображений. Пусто для эмодзи.', footerText:'📮 Парижский консьерж', copyBtn:'📋 Копировать', copySuccess:'Скопировано!' },
+      ja: { title:'✨ パリ観光名所16選 · エレガンスの旅', settingsBtn:'画像設定', themeBtn:'ダーク/ライト', saveSettings:'保存して更新', back:'戻る', home:'ホーム', tipsLabel:'💡 おすすめポイント', metroLabel:'🚇 最寄り駅', officialLabel:'🔗 公式サイト', settingsTitle:'🖼️ 画像URLを設定', settingsDesc:'各スポットの画像URLを入力。空欄は絵文字表示。', footerText:'📮 パリ観光コンシェルジュ', copyBtn:'📋 コピー', copySuccess:'コピーしました！' }
     };
+    
+    // スポットデータ (16個)
     const spotsData = [
       { id:"eiffel", emoji:"🗼", officialUrl:"https://www.toureiffel.paris/", metro:{en:"Champ de Mars - Tour Eiffel",fr:"Champ de Mars - Tour Eiffel",de:"Champ de Mars - Tour Eiffel",it:"Champ de Mars - Tour Eiffel",ru:"Шан-де-Марс — Тур Эйфель",ja:"シャン・ド・マルス＝トゥール・エッフェル駅"}, name:{en:"Eiffel Tower",fr:"Tour Eiffel",de:"Eiffelturm",it:"Torre Eiffel",ru:"Эйфелева башня",ja:"エッフェル塔"}, desc:{en:"Iconic wrought-iron tower built for 1889 World's Fair. Breathtaking views.",fr:"Tour emblématique en fer forgé. Vue imprenable.",de:"Wahrzeichen aus Schmiedeeisen. Atemberaubende Aussicht.",it:"Iconica torre in ferro battuto. Vista mozzafiato.",ru:"Знаменитая башня. Захватывающий вид.",ja:"1889年パリ万博の鉄塔。絶景。"}, tips:{en:"Book online. Sunset & sparkling lights.",fr:"Réservez en ligne. Coucher du soleil.",de:"Online buchen. Sonnenuntergang.",it:"Prenota online. Tramonto.",ru:"Бронируйте онлайн. Закат.",ja:"オンライン予約必須。日没時がおすすめ。"}},
       { id:"louvre", emoji:"🎨", officialUrl:"https://www.louvre.fr/", metro:{en:"Palais Royal - Musée du Louvre",fr:"Palais Royal - Musée du Louvre",de:"Palais Royal - Musée du Louvre",it:"Palais Royal - Musée du Louvre",ru:"Пале-Руаяль — Лувр",ja:"パレ・ロワイヤル＝ミュゼ・デュ・ルーヴル駅"}, name:{en:"Louvre Museum",fr:"Musée du Louvre",de:"Louvre Museum",it:"Museo del Louvre",ru:"Лувр",ja:"ルーヴル美術館"}, desc:{en:"World's largest art museum, home to Mona Lisa.",fr:"Plus grand musée d'art, Joconde.",de:"Größtes Kunstmuseum, Mona Lisa.",it:"Museo più grande, Gioconda.",ru:"Крупнейший музей, Джоконда.",ja:"世界最大の美術館。モナリザ。"}, tips:{en:"Late opening Wed/Fri. Enter via Carrousel.",fr:"Ouvert tard mer/ven. Entrée Carrousel.",de:"Spätabends Mi/Fr. Eingang Carrousel.",it:"Aperto tardi mer/ven. Ingresso Carrousel.",ru:"Вечер ср/пт. Вход через Carrousel.",ja:"水・金曜夜間開館。地下の入口から。"}},
@@ -112,8 +171,133 @@
       { id:"seine_cruise", emoji:"🚢", officialUrl:"https://www.bateaux-mouches.fr/", metro:{en:"Pont de l'Alma / Châtelet",fr:"Pont de l'Alma / Châtelet",de:"Pont de l'Alma / Châtelet",it:"Pont de l'Alma / Châtelet",ru:"Пон-де-л'Альма / Шатле",ja:"ポン・ド・ラルマ駅"}, name:{en:"Seine River Cruise",fr:"Croisière sur la Seine",de:"Seine-Flusskreuzfahrt",it:"Crociera sulla Senna",ru:"Прогулка по Сене",ja:"セーヌ川クルーズ"}, desc:{en:"Scenic boat cruise past Eiffel Tower, Louvre, Notre-Dame.",fr:"Croisière pittoresque devant Tour Eiffel, Louvre, Notre-Dame.",de:"Malerische Bootsfahrt vorbei an Sehenswürdigkeiten.",it:"Pittoresca crociera.",ru:"Живописная прогулка на лодке.",ja:"船上からパリのモニュメントを満喫。"}, tips:{en:"Evening cruise for Illuminations.",fr:"Croisière en soirée pour illuminations.",de:"Abendkreuzfahrt für Illuminationen.",it:"Crociera serale per illuminazioni.",ru:"Вечерняя прогулка ради иллюминации.",ja:"夜景クルーズが絶品。"}},
       { id:"catacombs", emoji:"💀", officialUrl:"https://www.catacombes.paris.fr/", metro:{en:"Denfert-Rochereau",fr:"Denfert-Rochereau",de:"Denfert-Rochereau",it:"Denfert-Rochereau",ru:"Данфер-Рошро",ja:"ダンフェール＝ロシュロー駅"}, name:{en:"Catacombs of Paris",fr:"Catacombes de Paris",de:"Katakomben von Paris",it:"Catacombe di Parigi",ru:"Парижские катакомбы",ja:"パリ・カタコンブ"}, desc:{en:"Underground ossuary with remains of 6 million Parisians.",fr:"Ossuaire souterrain de 6 millions de Parisiens.",de:"Unterirdisches Beinhaus mit 6 Millionen Parisern.",it:"Ossario sotterraneo di 6 milioni di parigini.",ru:"Подземный склеп с останками 6 миллионов парижан.",ja:"地下の骨窟。約600万人の遺骨。"}, tips:{en:"Buy tickets in advance. Bring a jacket.",fr:"Achetez billets à l'avance. Apportez une veste.",de:"Tickets im Voraus. Jacke mitbringen.",it:"Acquista biglietti in anticipo. Porta una giacca.",ru:"Покупайте билеты заранее. Возьмите куртку.",ja:"事前予約必須。地下は冷えるので上着を。"}}
     ];
+    
     let customImages = JSON.parse(localStorage.getItem('paris_custom_images')) || {};
+    let sortableInstance = null;
+    const ORDER_STORAGE_KEY = 'paris_spots_order';
+    
+    function getStoredOrder() {
+      const stored = localStorage.getItem(ORDER_STORAGE_KEY);
+      if (stored) {
+        try { const arr = JSON.parse(stored); if (Array.isArray(arr) && arr.length === spotsData.length) return arr; } catch(e) {}
+      }
+      return null;
+    }
+    function setStoredOrder(orderArray) { localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(orderArray)); }
+    function getDefaultOrder() { return spotsData.map(s => s.id); }
+    function getOrderedSpots() {
+      const storedOrder = getStoredOrder();
+      if (!storedOrder) return [...spotsData];
+      const orderMap = new Map(); storedOrder.forEach((id, idx) => orderMap.set(id, idx));
+      return [...spotsData].sort((a,b) => (orderMap.get(a.id)??9999) - (orderMap.get(b.id)??9999));
+    }
+    function saveOrderFromDOM() {
+      const cards = document.querySelectorAll('#spot-slider .spot-card');
+      if (cards.length === 0) return;
+      const newOrder = Array.from(cards).map(c => c.dataset.id);
+      if (newOrder.length === spotsData.length) setStoredOrder(newOrder);
+    }
     function getImageForSpot(id) { return customImages[id] || null; }
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m;}); }
+    
+    function createCardElement(spot) {
+      const card = document.createElement('div'); card.className = 'spot-card'; card.setAttribute('data-id', spot.id);
+      const name = spot.name[currentLang] || spot.name.en;
+      const desc = (spot.desc[currentLang] || spot.desc.en).substring(0, 80);
+      const imgUrl = getImageForSpot(spot.id);
+      const imgHtml = imgUrl ? `<img class="spot-img" src="${imgUrl}" alt="${name}" loading="lazy">` : `<div class="spot-emoji">${spot.emoji}</div>`;
+      card.innerHTML = `<div class="drag-handle-wrapper"><span class="drag-handle" aria-label="ドラッグして並べ替え">⋮⋮</span></div>${imgHtml}<div class="spot-name">${escapeHtml(name)}</div><div class="spot-desc">${escapeHtml(desc)}...</div>`;
+      card.addEventListener('click', (e) => { if (!e.target.closest('.drag-handle')) showDetailView(spot.id); });
+      const handle = card.querySelector('.drag-handle'); if(handle) { handle.addEventListener('mousedown', e=>e.stopPropagation()); handle.addEventListener('touchstart', e=>e.stopPropagation()); }
+      return card;
+    }
+    
+    function renderHome() {
+      const container = document.getElementById('spot-slider'); container.innerHTML = '';
+      const orderedSpots = getOrderedSpots();
+      orderedSpots.forEach(spot => container.appendChild(createCardElement(spot)));
+      if (sortableInstance) sortableInstance.destroy();
+      sortableInstance = new Sortable(container, { handle: '.drag-handle', animation: 250, ghostClass: 'sortable-drag', onEnd: () => saveOrderFromDOM() });
+    }
+    
+    function showDetailView(id) {
+      const spot = spotsData.find(s => s.id === id); if (!spot) return;
+      const tr = t[currentLang];
+      const name = spot.name[currentLang] || spot.name.en;
+      const desc = spot.desc[currentLang] || spot.desc.en;
+      const tips = spot.tips[currentLang] || spot.tips.en;
+      const metro = spot.metro[currentLang] || spot.metro.en;
+      const imgUrl = getImageForSpot(spot.id);
+      const imgHtml = imgUrl ? `<img class="detail-img" src="${imgUrl}" alt="${name}">` : `<div style="font-size:5rem">${spot.emoji}</div>`;
+      const html = `<div class="detail-header">${imgHtml}<div class="detail-title">${escapeHtml(name)}</div></div><div class="detail-description">${escapeHtml(desc)}</div><div class="tips-card"><strong>${tr.tipsLabel}</strong><br>${escapeHtml(tips)}</div><div class="metro-info">${tr.metroLabel}: ${escapeHtml(metro)}</div><br><a href="${spot.officialUrl}" target="_blank" class="official-link">${tr.officialLabel}</a><div class="back-buttons"><button class="back-btn" id="back-to-home">🏠 ${tr.home}</button><button class="back-btn" id="back-previous">◀ ${tr.back}</button></div>`;
+      const detailDiv = document.getElementById('detail-view'); detailDiv.innerHTML = html; detailDiv.setAttribute('data-spot-id', id);
+      document.getElementById('home-view').classList.add('hidden'); document.getElementById('settings-view').classList.add('hidden'); detailDiv.classList.remove('hidden');
+      document.getElementById('back-to-home')?.addEventListener('click', () => showHomeView());
+      document.getElementById('back-previous')?.addEventListener('click', () => window.history.back());
+      window.history.pushState({ view: 'detail', id }, '', `#${id}`);
+    }
+    
+    function showHomeView() {
+      document.getElementById('detail-view').classList.add('hidden'); document.getElementById('settings-view').classList.add('hidden'); document.getElementById('home-view').classList.remove('hidden');
+      window.history.pushState({ view: 'home' }, '', '#home');
+      renderHome();
+    }
+    
+    function openSettings() {
+      const grid = document.getElementById('settings-grid'); grid.innerHTML = '';
+      spotsData.forEach(spot => { const div = document.createElement('div'); div.className = 'settings-item'; div.innerHTML = `<label>${spot.emoji} ${spot.name.en}</label><input type="text" id="img_${spot.id}" placeholder="https://..." value="${customImages[spot.id] || ''}">`; grid.appendChild(div); });
+      document.getElementById('home-view').classList.add('hidden'); document.getElementById('detail-view').classList.add('hidden'); document.getElementById('settings-view').classList.remove('hidden');
+    }
+    
+    function saveSettings() {
+      spotsData.forEach(spot => { const input = document.getElementById(`img_${spot.id}`); if (input && input.value.trim()) customImages[spot.id] = input.value.trim(); else delete customImages[spot.id]; });
+      localStorage.setItem('paris_custom_images', JSON.stringify(customImages)); renderHome();
+      const curId = document.getElementById('detail-view').getAttribute('data-spot-id');
+      if (curId && !document.getElementById('detail-view').classList.contains('hidden')) showDetailView(curId);
+      alert(t[currentLang].saveSettings); showHomeView();
+    }
+    
+    // ---------- コピー機能 (ホーム画面 or 詳細画面) ----------
+    function showToast(msg) {
+      const toast = document.getElementById('copy-toast');
+      toast.textContent = msg || t[currentLang].copySuccess;
+      toast.style.opacity = '1';
+      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+    }
+    async function copyCurrentContent() {
+      const isHome = !document.getElementById('home-view').classList.contains('hidden');
+      const isDetail = !document.getElementById('detail-view').classList.contains('hidden');
+      let textToCopy = '';
+      if (isDetail) {
+        // 詳細画面：スポット名・説明・ヒント・メトロ・公式サイトを整形
+        const detailDiv = document.getElementById('detail-view');
+        const title = detailDiv.querySelector('.detail-title')?.innerText || '';
+        const desc = detailDiv.querySelector('.detail-description')?.innerText || '';
+        const tipsElem = detailDiv.querySelector('.tips-card');
+        let tipsText = '';
+        if(tipsElem) tipsText = tipsElem.innerText.replace(/^💡\s*/, '');
+        const metroElem = detailDiv.querySelector('.metro-info');
+        let metroText = metroElem ? metroElem.innerText : '';
+        const officialLink = detailDiv.querySelector('.official-link')?.href || '';
+        textToCopy = `📍 ${title}\n\n📖 ${desc}\n\n💡 ${tipsText}\n\n${metroText}\n\n🔗 公式サイト: ${officialLink}`;
+      } else if (isHome) {
+        // ホーム画面：現在表示されているカードのリストを順番にコピー (番号付き)
+        const cards = document.querySelectorAll('#spot-slider .spot-card');
+        const spotNames = Array.from(cards).map((card, idx) => {
+          const nameEl = card.querySelector('.spot-name');
+          return `${idx+1}. ${nameEl?.innerText || ''}`;
+        });
+        if (spotNames.length) textToCopy = `✨ パリ観光名所16選 (並び順)\n${spotNames.join('\n')}`;
+        else textToCopy = '観光スポットがありません。';
+      } else {
+        textToCopy = document.title + ' - ' + window.location.href;
+      }
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        showToast();
+      } catch (err) { alert('コピーに失敗しました'); }
+    }
+    
     function updateUI() {
       const tr = t[currentLang];
       document.getElementById('app-title').innerText = tr.title;
@@ -124,93 +308,21 @@
       document.getElementById('settings-title').innerText = tr.settingsTitle;
       document.getElementById('settings-desc').innerText = tr.settingsDesc;
       document.getElementById('footer-text').innerHTML = `${tr.footerText}<br><a href="mailto:mementomorikatsu@gmail.com">mementomorikatsu@gmail.com</a>`;
+      const copySpan = document.getElementById('copy-text'); if(copySpan) copySpan.innerText = tr.copyBtn;
       renderHome();
       const curId = document.getElementById('detail-view').getAttribute('data-spot-id');
       if (!document.getElementById('home-view').classList.contains('hidden') && curId) showDetailView(curId);
     }
-    function renderHome() {
-      const container = document.getElementById('spot-slider');
-      container.innerHTML = '';
-      spotsData.forEach(spot => {
-        const card = document.createElement('div'); card.className = 'spot-card';
-        const name = spot.name[currentLang] || spot.name.en;
-        const desc = (spot.desc[currentLang] || spot.desc.en).substring(0, 80);
-        const imgUrl = getImageForSpot(spot.id);
-        const imgHtml = imgUrl ? `<img class="spot-img" src="${imgUrl}" alt="${name}" loading="lazy">` : `<div class="spot-emoji">${spot.emoji}</div>`;
-        card.innerHTML = `${imgHtml}<div class="spot-name">${name}</div><div class="spot-desc">${desc}...</div>`;
-        card.onclick = () => showDetailView(spot.id);
-        container.appendChild(card);
-      });
-    }
-    function showDetailView(id) {
-      const spot = spotsData.find(s => s.id === id);
-      if (!spot) return;
-      const tr = t[currentLang];
-      const name = spot.name[currentLang] || spot.name.en;
-      const desc = spot.desc[currentLang] || spot.desc.en;
-      const tips = spot.tips[currentLang] || spot.tips.en;
-      const metro = spot.metro[currentLang] || spot.metro.en;
-      const imgUrl = getImageForSpot(spot.id);
-      const imgHtml = imgUrl ? `<img class="detail-img" src="${imgUrl}" alt="${name}">` : `<div style="font-size:5rem">${spot.emoji}</div>`;
-      const html = `
-        <div class="detail-header">${imgHtml}<div class="detail-title">${name}</div></div>
-        <div class="detail-description">${desc}</div>
-        <div class="tips-card"><strong>${tr.tipsLabel}</strong><br>${tips}</div>
-        <div class="metro-info">${tr.metroLabel}: ${metro}</div><br>
-        <a href="${spot.officialUrl}" target="_blank" class="official-link">${tr.officialLabel}</a>
-        <div class="back-buttons"><button class="back-btn" id="back-to-home">🏠 ${tr.home}</button><button class="back-btn" id="back-previous">◀ ${tr.back}</button></div>
-      `;
-      const detailDiv = document.getElementById('detail-view');
-      detailDiv.innerHTML = html; detailDiv.setAttribute('data-spot-id', id);
-      document.getElementById('home-view').classList.add('hidden');
-      document.getElementById('settings-view').classList.add('hidden');
-      detailDiv.classList.remove('hidden');
-      document.getElementById('back-to-home')?.addEventListener('click', () => showHomeView());
-      document.getElementById('back-previous')?.addEventListener('click', () => window.history.back());
-      window.history.pushState({ view: 'detail', id }, '', `#${id}`);
-    }
-    function showHomeView() {
-      document.getElementById('detail-view').classList.add('hidden');
-      document.getElementById('settings-view').classList.add('hidden');
-      document.getElementById('home-view').classList.remove('hidden');
-      window.history.pushState({ view: 'home' }, '', '#home');
-      renderHome();
-    }
-    function openSettings() {
-      const grid = document.getElementById('settings-grid');
-      grid.innerHTML = '';
-      spotsData.forEach(spot => {
-        const div = document.createElement('div'); div.className = 'settings-item';
-        div.innerHTML = `<label>${spot.emoji} ${spot.name.en}</label><input type="text" id="img_${spot.id}" placeholder="https://..." value="${customImages[spot.id] || ''}">`;
-        grid.appendChild(div);
-      });
-      document.getElementById('home-view').classList.add('hidden');
-      document.getElementById('detail-view').classList.add('hidden');
-      document.getElementById('settings-view').classList.remove('hidden');
-    }
-    function saveSettings() {
-      spotsData.forEach(spot => {
-        const input = document.getElementById(`img_${spot.id}`);
-        if (input && input.value.trim()) customImages[spot.id] = input.value.trim();
-        else delete customImages[spot.id];
-      });
-      localStorage.setItem('paris_custom_images', JSON.stringify(customImages));
-      renderHome();
-      const curId = document.getElementById('detail-view').getAttribute('data-spot-id');
-      if (curId && !document.getElementById('detail-view').classList.contains('hidden')) showDetailView(curId);
-      alert(t[currentLang].saveSettings);
-      showHomeView();
-    }
+    
     function initLangButtons() {
-      const container = document.getElementById('lang-buttons');
-      container.innerHTML = '';
+      const container = document.getElementById('lang-buttons'); container.innerHTML = '';
       for (let [code, label] of Object.entries(languages)) {
-        const btn = document.createElement('button'); btn.className = 'lang-btn';
-        btn.innerHTML = label;
+        const btn = document.createElement('button'); btn.className = 'lang-btn'; btn.innerHTML = label;
         btn.onclick = () => { currentLang = code; updateUI(); };
         container.appendChild(btn);
       }
     }
+    
     function initTheme() {
       const stored = localStorage.getItem('theme');
       if (stored === 'light') { document.body.classList.remove('dark'); document.body.classList.add('light'); }
@@ -221,11 +333,13 @@
         else { document.body.classList.replace('light', 'dark'); localStorage.setItem('theme', 'dark'); }
       };
     }
+    
     function route() {
       const hash = window.location.hash.slice(1);
       if (hash && hash !== 'home' && spotsData.some(s => s.id === hash)) showDetailView(hash);
       else showHomeView();
     }
+    
     window.addEventListener('popstate', () => {
       if (!document.getElementById('home-view').classList.contains('hidden')) {
         const id = window.location.hash.slice(1);
@@ -233,11 +347,14 @@
         else showHomeView();
       } else { if (window.location.hash === '#home') showHomeView(); else route(); }
     });
+    
+    if (!getStoredOrder()) setStoredOrder(getDefaultOrder());
     if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(e=>console.log('SW error', e)));
     initLangButtons(); initTheme(); renderHome(); route();
     document.getElementById('settings-btn')?.addEventListener('click', openSettings);
     document.getElementById('save-settings')?.addEventListener('click', saveSettings);
     document.getElementById('close-settings')?.addEventListener('click', showHomeView);
+    document.getElementById('copy-btn')?.addEventListener('click', copyCurrentContent);
   </script>
 </body>
 </html>
